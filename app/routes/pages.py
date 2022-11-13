@@ -1,5 +1,6 @@
+from sanic.log import logger
 from sanic_ext import openapi
-from sanic_ext.extensions.openapi import definitions
+
 
 def routes(app):
 
@@ -39,7 +40,7 @@ def routes(app):
     @app.ext.template("index.html")
     async def query_string(request):
         partner_id = request.get_args(keep_blank_values=True).get("")
-        app.ctx.logger.info(f"partner_id: {partner_id}")
+        logger.info(f"partner_id: {partner_id}")
         if partner_param := partners.get(partner_id):
             return partner_param
         else:
@@ -51,12 +52,4 @@ def routes(app):
     )
     @app.ext.template("terms.html")
     async def terms(request):
-        # """
-        # openapi:
-        # ---
-        # operationId: terms
-        # tags:
-        #   - pages
-        # """
-
         return {}

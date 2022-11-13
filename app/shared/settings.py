@@ -51,5 +51,5 @@ aqua_api_host = get('aqua_api_host')
 
 
 if __name__ == "__main__":
-    s = get('rabbit/user')
+    s = get('rabbit')
     print(s)

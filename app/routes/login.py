@@ -10,11 +10,11 @@ from sanic import Blueprint
 import bcrypt
 import jwt
 
-app_salt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWJjIiwiZW1haWwiOiJuYW5jeUBnbWFpbC5jb20iLCJleHAiOjE2NjgzNzExNTZ9.eAaFT-H8PfLpRKpY37xk7frAfJnQS5jn7hjycOpOj3o".encode('utf-8')
-secret = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWJjIiwiZW1haWwiOiJuYW5jeUBnbWFpbC5jb20iLCJleHAiOjE2NjgzNzIzNzJ9.zyXSZ6lwtBCHN8Jwf5aFzHE4_uwVNmUcHOvjJ72AImo"
+app_salt = b'$2b$12$iRF76B96HrCFH9HNEpNQpe'
+secret = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWJjIiwiZW1haWwiOiJuYW5jeUBnbWFpbC5j"
 users = {
-    "aqua": bcrypt.hashpw(app_salt, "NjgzNzExNTZ9.eAaFT-H8P".encode('utf-8')),
-    "arena": bcrypt.hashpw(app_salt, "zI1NiIsInR5cCI6IkpXVCJ9.eyJ1".encode('utf-8')),
+    "aqua": bcrypt.hashpw("NjgzNzExNTZ9.eAaFT-H8P".encode('utf-8'), app_salt),
+    "arena": bcrypt.hashpw("zI1NiIsInR5cCI6IkpXVCJ9.eyJ1".encode('utf-8'), app_salt),
 }
 
 

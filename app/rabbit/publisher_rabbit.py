@@ -3,6 +3,7 @@ import time
 
 import aio_pika
 from aio_pika import ExchangeType, Message
+from sanic.log import logger
 
 
 def parse_delay(days=0, hours=0, minutes=0, seconds=0):
@@ -14,8 +15,7 @@ def parse_delay(days=0, hours=0, minutes=0, seconds=0):
 
 class Publisher:
 
-    def __init__(self, logger, host, port, user, password):
-        self.logger = logger
+    def __init__(self, host, port, user, password):
         self.host = host
         self.port = port
         self.user = user
@@ -41,11 +41,11 @@ class Publisher:
         try:
             delay = int(abs(delay))
             if not self.connection:
-                self.logger.info(f'connection not defined')
+                logger.info(f'connection not defined')
                 self.connection = await self.connect()
 
             if self.connection.is_closed:
-                self.logger.info(f'is closed: {self.connection.is_closed}')
+                logger.info(f'is closed: {self.connection.is_closed}')
                 self.connection = await self.connect()
 
             channel = await self.connection.channel()
@@ -65,7 +65,7 @@ class Publisher:
                                                              routing_key=delayed_queue_name)
                 return True
         except Exception as e:
-            self.logger.error(f'simple_publish: {e}')
+            logger.error(f'simple_publish: {e}')
             await self.connection.close()
             return False
 
@@ -73,13 +73,13 @@ class Publisher:
 
         try:
             delay = int(abs(delay))
-            self.logger.debug(f'publish {body}')
+            logger.debug(f'publish {body}')
             if not self.connection:
-                self.logger.info(f'connection not defined')
+                logger.info(f'connection not defined')
                 self.connection = await self.connect()
 
             if self.connection.is_closed:
-                self.logger.info(f'is closed: {self.connection.is_closed}')
+                logger.info(f'is closed: {self.connection.is_closed}')
                 self.connection = await self.connect()
 
             channel = await self.connection.channel()
@@ -104,7 +104,7 @@ class Publisher:
                 )
             return True
         except Exception as e:
-            self.logger.error(f'simple_publish: {e}')
+            logger.error(f'simple_publish: {e}')
             await self.connection.close()
             return False
 
