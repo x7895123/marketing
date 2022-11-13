@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: SSSSSS
+  namespace: dostyk
+spec:
+  template:
+    spec:
+      containers:
+        - name: SSSSSS
+          env:
+            - name: IOU_ADDRESS
+              value: "0x2ae93d5f25abf2e7141f655bd08d0e7bd2ac1e55"
+            - name: ENVIRONMENT
+              value: "STAGE"
+            - name: AUTH_URL
+              value: "http://server-market.dostyk.svc.cluster.local.:8080/market/rest/v2/oauth/token?grant_type=password&username={username}&password={password}"
+            - name: GET_ADDRESS_URL
+              value: "http://server-dealsrest.dostyk.svc.cluster.local:8080/dealsrest/getProfileAddressByAlias?alias={alias}"
+            - name: NONCE_URL
+              value: "http://server-transaction.dostyk.svc.cluster.local:8080/contract/nonce?walletAddress={address}"
+            - name: SEND_TRANSACTION_URL
+              value: "http://server-transaction.dostyk.svc.cluster.local:8080/transaction/send?blockchainTransaction={signed_transaction}"
+            - name: GIFT_CREATE_URL
+              value: "http://server-deal.dostyk.svc.cluster.local:8080/gift/create"
+            - name: REGISTER_COMPANY_WEBHOOK_URL
+              value: "http://server-phonesubscription.dostyk.svc.cluster.local:8080/phss/registerCompanyWebhook"
+            - name: SUBSCRIBE_PHONE_URL
+              value: "http://server-phonesubscription.dostyk.svc.cluster.local:8080/phss/subscribePhone"
+            - name: WEBHOOKURL
+              value: "http://server-marketing.dostyk.svc.cluster.local:8080/event/?id_company={id_company}"
+
+            - name: AUTH_MARKETING_USER
+              value: "01kz"
+            - name: AUTH_MARKETING_PASSWORD
+              value: "1"
+          envFrom:
+          - configMapRef:
+              name: config-postgres
+          - configMapRef:
+              name: config-kafka
+          - configMapRef:
+              name: config-s3
+          - configMapRef:
+              name: config-quorum
+          - configMapRef:
+              name: config-auth
+
+

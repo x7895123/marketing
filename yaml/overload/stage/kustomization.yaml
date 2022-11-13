@@ -1,0 +1,17 @@
+bases:
+- ../../base
+
+generatorOptions:
+  disableNameSuffixHash: true
+namespace: dostyk
+patchesJson6902:
+- target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: SSSSSS
+  path: custversion.yaml
+patchesStrategicMerge:
+- setenv.yaml
+- setDNSpatch.yaml
+- setIPservice.yaml

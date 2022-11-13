@@ -1,0 +1,31 @@
+# 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
+networks:
+  marketing:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 14.0.0.0/8
+
+
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    extra_hosts:
+      - "market.dostyq.app:192.168.90.110"
+      - "quorum.dostyq.app:192.168.90.110"
+      - "app.dostyq.app:192.168.90.110"
+      - "api.dostyq.app:192.168.90.110"
+      - "marketing.dostyq.app:192.168.90.110"
+    volumes:
+      - ./app:/app
+    env_file: .env
+    networks:
+      marketing:
+        ipv4_address: 14.10.0.4
+    ports:
+      - 8000:8000
+    command: python main.py

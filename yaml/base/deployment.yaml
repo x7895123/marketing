@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: SSSSSS
+  namespace: dostyk
+  generation: 1
+  labels:
+    service: SSSSSS
+spec:
+  selector:
+    matchLabels:
+      service: SSSSSS
+  template:
+    spec:
+      containers:
+      - name: SSSSSS
+        image: images-name-and-version
+        command: ["/bin/sh", "-c", "python main.py"]
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+          name: metric
+        imagePullPolicy: IfNotPresent
+    metadata:
+      labels:
+        service: SSSSSS
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+  replicas: 0

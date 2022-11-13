@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: SSSSSS
+  namespace: dostyk
+spec:
+  template:
+    spec:
+      containers:
+        - name: SSSSSS
+          env:
+            - name: IOU_ADDRESS
+              value: "0xb7841c39dc4cefab63f601c37b74fe3be14e6a23"
+            - name: ENVIRONMENT
+              value: "PROD"
+            - name: AUTH_URL
+              value: "http://server-market.prod-dostyq.svc.cluster.local.:8080/market/rest/v2/oauth/token?grant_type=password&username={username}&password={password}"
+            - name: GET_ADDRESS_URL
+              value: "http://server-dealsrest.prod-dostyq.svc.cluster.local.:8080/dealsrest/getProfileAddressByAlias?alias={alias}"
+            - name: NONCE_URL
+              value: "http://server-transaction.prod-dostyq.svc.cluster.local.:8080/contract/nonce?walletAddress={address}"
+            - name: SEND_TRANSACTION_URL
+              value: "http://server-transaction.prod-dostyq.svc.cluster.local.:8080/transaction/send?blockchainTransaction={signed_transaction}"
+            - name: GIFT_CREATE_URL
+              value: "http://server-deal.prod-dostyq.svc.cluster.local.:8080/gift/create"
+            - name: REGISTER_COMPANY_WEBHOOK_URL
+              value: "http://server-phonesubscription.prod-dostyq.svc.cluster.local.:8080/phss/registerCompanyWebhook"
+            - name: SUBSCRIBE_PHONE_URL
+              value: "http://server-phonesubscription.prod-dostyq.svc.cluster.local.:8080/phss/subscribePhone"
+            - name: WEBHOOKURL
+              value: "http://server-marketing.prod-dostyq.svc.cluster.local.:8080/event/?id_company={id_company}"
+            - name: AUTH_MARKETING_USER
+              value: "aquakrg"
+            - name: AUTH_MARKETING_PASSWORD
+              value: "aquaJkfmg7pdo5!"
+          envFrom:
+          - configMapRef:
+              name: config-postgres
+          - configMapRef:
+              name: config-kafka
+          - configMapRef:
+              name: config-s3
+          - configMapRef:
+              name: config-quorum
+          - configMapRef:
+              name: config-auth
+          - configMapRef:
+              name: config-rabbit
+
+
+
