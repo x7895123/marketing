@@ -46,7 +46,7 @@ app.ext.openapi.add_security_scheme(
     scheme="bearer",
 )
 
-app.static('/static', './static', name='pages')
+app.static('/static', './static', name='static')
 app.static('/img', './static/img', name='img')
 app.static('/css', './static/css', name='css')
 
