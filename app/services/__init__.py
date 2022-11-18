@@ -1,3 +1,3 @@
-import marketing_db
+
 
 

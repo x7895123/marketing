@@ -4,13 +4,13 @@ from sanic import Sanic
 
 import tortoise.contrib.sanic
 
+from dependencies.dependencies import register_dependencies
 from routes.login import bp as login_bp
+from routes.game import bp as game_bp
 from routes.pages import routes as pages_routes
 from middlewares.middlewares import setup_middlewares
 
-from rabbit.consumer_rabbit import consume
-from rabbit.publisher_rabbit import Publisher
-from shared.settings import *
+from shared import settings
 from shared.tools import *
 
 app = Sanic('Marketing')
@@ -21,16 +21,17 @@ app.config.API_TITLE = 'Marketing'
 app.config.API_CONTACT_EMAIL = 'vladimirsv@gmail.com'
 app.config.API_DESCRIPTION = 'Integration API for business'
 
-# injected objects
-settings_name = 'prod'
-rabbit_params = get('rabbit')
+settings.config_name = 'prod'
+rabbit_params = settings.get('aqua_rabbit')
 logger.info(rabbit_params)
 
-tortoise.contrib.sanic.register_tortoise(app, config=get('api'), generate_schemas=True)
-app.ctx.publisher = Publisher(**rabbit_params)
+# injected objects
+tortoise.contrib.sanic.register_tortoise(app, config=settings.get('api'), generate_schemas=True)
+register_dependencies(app)
 
 # load routes
 app.blueprint(login_bp)
+app.blueprint(game_bp)
 pages_routes(app)
 setup_middlewares(app)
 

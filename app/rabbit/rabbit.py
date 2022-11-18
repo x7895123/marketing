@@ -1,9 +1,14 @@
 import json
 import time
+from typing import Optional, Any, Coroutine
 
 import aio_pika
-from aio_pika import ExchangeType, Message
+import rapidjson
+from aio_pika import ExchangeType, Message, IncomingMessage
+from aio_pika.abc import AbstractIncomingMessage, AbstractRobustConnection
 from sanic.log import logger
+
+from app.shared.settings import get
 
 
 def parse_delay(days=0, hours=0, minutes=0, seconds=0):
@@ -13,7 +18,7 @@ def parse_delay(days=0, hours=0, minutes=0, seconds=0):
            int(abs(seconds)) * 1000
 
 
-class Publisher:
+class Rabbit:
 
     def __init__(self, host, port, user, password):
         self.host = host
@@ -37,16 +42,32 @@ class Publisher:
             except KeyboardInterrupt:
                 break
 
+    async def get(self, queue_name) -> Coroutine[Any, Any, AbstractIncomingMessage | None] | bool:
+        try:
+            await self.check_connection()
+            channel = await self.connection.channel()
+            queue = await channel.declare_queue(queue_name, durable=True)
+            message = await queue.get()
+            async with message.process():
+                return rapidjson.loads(message.body)
+
+        except Exception as e:
+            logger.error(f'publish get: {e}')
+            await self.connection.close()
+            return False
+
+    async def check_connection(self):
+        if not self.connection:
+            logger.info(f'connection not defined')
+            self.connection = await self.connect()
+        if self.connection.is_closed:
+            logger.info(f'is closed: {self.connection.is_closed}')
+            self.connection = await self.connect()
+
     async def ttl_publish(self, body, queue_name, delay=0):
         try:
             delay = int(abs(delay))
-            if not self.connection:
-                logger.info(f'connection not defined')
-                self.connection = await self.connect()
-
-            if self.connection.is_closed:
-                logger.info(f'is closed: {self.connection.is_closed}')
-                self.connection = await self.connect()
+            await self.check_connection()
 
             channel = await self.connection.channel()
             queue = await channel.declare_queue(queue_name, durable=True)
@@ -74,13 +95,7 @@ class Publisher:
         try:
             delay = int(abs(delay))
             logger.debug(f'publish {body}')
-            if not self.connection:
-                logger.info(f'connection not defined')
-                self.connection = await self.connect()
-
-            if self.connection.is_closed:
-                logger.info(f'is closed: {self.connection.is_closed}')
-                self.connection = await self.connect()
+            await self.check_connection()
 
             channel = await self.connection.channel()
             queue = await channel.declare_queue(queue_name, durable=True)
@@ -136,4 +151,3 @@ class Publisher:
 #         logger.error(f'error {e}')
 if __name__ == '__main__':
     pass
-    # asyncio.run(test())

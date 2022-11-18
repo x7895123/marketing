@@ -1,11 +1,21 @@
 settings = {
     "prod": {
         "environment": "test",
-        "rabbit": {
+        "arena_rabbit": {
             "host": "192.168.90.221",
             "port": 5672,
             "user": "admin",
             "password": "rabbitjkfmg7pdo5"
+        },
+        "aqua_rabbit": {
+            "host": "192.168.90.221",
+            "port": 5673,
+            "user": "aqua",
+            "password": "aquajkfmg7pdo5"
+        },
+
+        "dostyq_marketing_authorization": {
+            "aqua": "Basic YXF1YWtyZzphcXVhSmtmbWc3cGRvNSE=",
         },
         "aqua_api_host": "192.168.90.221:4042",
         "api": {
@@ -43,11 +53,12 @@ def get(_path):
 
 config_name = 'prod'
 environment = get('environment')
-rabbit_host = get('rabbit/host')
-rabbit_port = get('rabbit/port')
-rabbit_user = get('rabbit/user')
-rabbit_password = get('rabbit/password')
+rabbit_host = get('aqua_rabbit/host')
+rabbit_port = get('aqua_rabbit/port')
+rabbit_user = get('aqua_rabbit/user')
+rabbit_password = get('aqua_rabbit/password')
 aqua_api_host = get('aqua_api_host')
+dostyq_marketing_authorization = get('dostyq_marketing_authorization')
 
 
 if __name__ == "__main__":

@@ -6,63 +6,108 @@ import rapidjson
 import datetime
 from sanic.log import logger
 
+from app.models import bills
+from app.shared import tools
+
 
 def d():
     print('hi')
 
 
-async def add_bill(bill: dict, id_company, services):
+async def add_bill(bill: dict, company):
     try:
         phone = str(bill.get('phone'))
-        phone = services.tools.correct_phone(phone)
         if not phone:
             logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: phone is not defined')
             return {'error': 'phone is not defined'}
+        phone = tools.correct_phone(phone)
         bill_no = str(bill.get('bill_no'))
         if bill_no is None:
             return {'error': 'Bill № is not defined'}
-        bill_id = f"{id_company}-{bill_no}"
-        operation = bill.get('operation')
-        operation_time = bill.get('operation_time')
-        if operation_time is None:
-            operation_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        bill_no = f"{company}-{bill_no}"
+        cashdesk = bill.get('cashdesk', company)
+        paytime = bill.get('paytime', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         amount = bill.get('amount')
         amount = int(amount) if amount else 0
+        task = bill.get('task', {})
+
+        marketing_bill = await bills.marketing_bill.create(
+            company=company,
+            cashdesk=cashdesk,
+            bill_no=bill_no,
+            phone=phone,
+            amount=amount,
+            paytime=paytime,
+            bill=bill,
+            task=task
+        )
+        marketing_cashback = await bills.marketing_cashback.create(
+            company=company,
+            amount=amount,
+            paytime=paytime,
+            bill_no=bill_no,
+            phone=phone,
+            task=task,
+            cashback=True,
+            cashback_date=datetime.datetime.now().strftime("%Y-%m-%d %")
+
+
+
+        )
+
         sql = f"""
-                insert into public.marketing_bill (id_company, phone, company_bill_no, operation, operation_time, amount, bill) 
-                values('{id_company}','{phone}','{bill_id}','{operation}','{operation_time}',{amount},'{rapidjson.dumps(bill)}')
+                insert into public.marketing_bill (company,cashdesk,phone,company_bill_no,paytime,amount,bill,task) 
+                values('{company}','{cashdesk}','{phone}','{bill_no}','{paytime}',{amount},'{rapidjson.dumps(bill)}','{task}')
                 ON CONFLICT ON CONSTRAINT marketing_bill_un DO NOTHING
                 RETURNING id
             """
         logger.debug(sql)
-        conn = Tortoise.get_connection("marketing")
+        conn = Tortoise.get_connection("arena")
         result = await conn.execute_query_dict(sql)
         logger.debug(f"marketing add_bill: {result}")
         if result:
             id_marketing_bill = int(result[0].get('id'))
             logger.debug(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: id_marketing_bill {id_marketing_bill}")
             body = {
-                'id_company': str(id_company),
+                'company': company,
+                'cashdesk': cashdesk,
                 'phone': phone,
-                'bill_id': bill_no,
-                'operation': operation,
-                'operation_time': operation_time,
+                'bill_no': bill_no,
+                'paytime': paytime,
                 'amount': amount,
                 'bill': bill,
-                'id_marketing_bill': id_marketing_bill,
-                'source': 'bill',
+                'task': task,
+                'id_marketing_bill': id_marketing_bill
             }
             logger.debug(
                 f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: body {body}")
             return {"body": body}
         else:
             logger.debug(
-                f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: Company bill_no {bill_id} already exists"
+                f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: Company bill_no {bill_no} already exists"
             )
-            bill_id = f"{id_company}-{bill_id}"
-            result = await self.get_contract_address_from_task(bill_id)
-            contract_address = result.get('contract_address')
-            return {"contract_address": contract_address, "bill_id": bill_id}
+
+            return {"warning": f"Company bill_no {bill_no} already exists"}
+    except Exception as e:
+        logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
+        return {"error": e}
+
+
+async def get_cashback(bill_no):
+    try:
+        sql = f"""
+            select
+                c.id id_marketing_bill,
+                c.id_bill, c.phone, c.create_ts, c.sent_ts, c.expiration_ts, c.deal, c.deal_status, c.error_message, c.recipient_address, c.contract_address from public.marketing_cashback c
+            where c.bill_no = 
+            """
+        logger.debug(sql)
+        conn = Tortoise.get_connection("arena")
+        result = await conn.execute_query_dict(sql)
+        logger.debug(f"marketing add_bill: {result}")
+        if result:
+            return
+
     except Exception as e:
         logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
         return {"error": e}

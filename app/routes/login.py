@@ -1,9 +1,8 @@
 from datetime import datetime, timedelta, timezone
 import inspect
-
 from sanic_ext import openapi
 from sanic_ext.extensions.openapi import definitions
-from sanic import text, exceptions, json
+from sanic import text, exceptions, json, Request
 from sanic.log import logger
 from sanic import Blueprint
 
@@ -18,18 +17,20 @@ users = {
 }
 
 
-async def verify_password(username, password):
+async def verify_password(request):
     try:
+        username = request.credentials.username
+        password = request.credentials.password
         byte_password = password.encode('utf-8')
         hashed_password = users.get(username)
         if bcrypt.checkpw(byte_password, hashed_password):
             return True
         else:
             logger.info(f"check_user. password for {username} is invalid")
-            return None
+            return False
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
-        return None
+        return False
 
 
 async def gen_token():
@@ -57,7 +58,7 @@ bp = Blueprint("login")
         definitions.Response('Authentication error', status=400)
     ],
 )
-async def login(request):
+async def login(request: Request):
     """Получение токена
 
     Для работы с API необходимо
@@ -74,15 +75,13 @@ async def login(request):
     """
 
     try:
-        username = request.credentials._username
-        password = request.credentials._password
-        if not await verify_password(username, password):
+        if not await verify_password(request=request):
             return text(f"Basic Authentication error", status=400)
 
         if token := await gen_token():
             return text(token)
         else:
-            return text(f"Bearer Authentication error", status=400)
+            return text(f"Getting Bearer Authentication error", status=400)
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
-        return text(f"{e}", status=400)
+        return text(f"login error: {e}", status=400)
