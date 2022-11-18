@@ -24,8 +24,8 @@ app.config.API_CONTACT_EMAIL = 'vladimirsv@gmail.com'
 app.config.API_DESCRIPTION = 'Integration API for business'
 
 settings.config_name = 'prod'
-rabbit_params = settings.get('aqua_rabbit')
-logger.info(rabbit_params)
+# rabbit_params = settings.get('arena_rabbit')
+# logger.info(rabbit_params)
 
 # injected objects
 tortoise.contrib.sanic.register_tortoise(app, config=settings.get('api'), generate_schemas=True)

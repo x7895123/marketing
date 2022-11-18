@@ -41,12 +41,13 @@ async def add_bill(bill: dict, company):
             bill=bill,
             task=task
         )
-        logger.info(marketing_bill[0])
+        # logger.info(marketing_bill[0])
+        logger.info(marketing_bill[0].__dict__)
         marketing_cashback = await bills.MarketingCashback.get_or_create(
             phone=phone,
             id_bill=marketing_bill[0]
         )
-        logger.info(marketing_cashback[0])
+        logger.info(marketing_cashback[0].__dict__)
         return marketing_bill, marketing_cashback
 
 

@@ -43,13 +43,16 @@ async def add_bill(request, publisher: Rabbit):
             return text(f"Basic Authentication error", status=400)
 
         marketing_bill, marketing_cashback = await marketing_db.add_bill(request.json, request.ctx.company)
-        if body := result.get('body'):
+        if marketing_cashback[1]:
+            body = marketing_bill[0].__dict__.get('bill')
+            body.update(marketing_cashback[0].__dict__)
+            body = rapidjson.dumps(body)
             cashdesk = body.get('cashdesk')
             await publisher.publish(body=body, queue_name=f'{cashdesk}_calc_bonus')
-            return json(f"get_spin", status=200)
+            return json({"result": "ok"}, status=200)
         else:
-            return json(body, status=400 if body.get('error') else 400)
+            return json({"result": "already saved"}, status=200)
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
-        return json({f"get_spin error": e}, status=400)
+        return json({f"error": e}, status=400)
 
