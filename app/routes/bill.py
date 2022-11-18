@@ -43,63 +43,14 @@ async def add_bill(request, publisher: Rabbit):
             return text(f"Basic Authentication error", status=400)
 
         result = await marketing_db.add_bill(request.json, request.ctx.company)
-        if body := result.get('body'):
-            cashdesk = body.get('cashdesk')
-            await publisher.publish(body=body, queue_name=f'{cashdesk}_calc_bonus')
-            return json(f"get_spin error", status=200)
-        else:
-            return json(body, status=400 if body.get('error') else 400)
+        return json(f"get_spin", status=200)
+        # if body := result.get('body'):
+        #     cashdesk = body.get('cashdesk')
+        #     await publisher.publish(body=body, queue_name=f'{cashdesk}_calc_bonus')
+        #     return json(f"get_spin", status=200)
+        # else:
+        #     return json(body, status=400 if body.get('error') else 400)
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
         return json({f"get_spin error": e}, status=400)
 
-
-@bp.route("/send_gift", methods=["POST"])
-@openapi.definition(
-    secured={"basicAuth": []},
-    summary="Send a gift",
-    response=[
-        definitions.Response('Ok', status=200),
-        definitions.Response('Authentication error', status=400)
-    ],
-)
-async def send_gift(request):
-    """Send Gift
-
-    openapi:
-    ---
-    operationId: send_gift
-    tags:
-      - Game
-    """
-
-    try:
-        if not await verify_password(request=request):
-            return text(f"Basic Authentication error", status=400)
-
-        gift = request.json
-        phone = request.json.get('phone')
-        if not phone:
-            return text(f"phone is required", status=401)
-
-        phone = tools.correct_phone(phone)
-
-        bill_id = gift.get('bill_id')
-        if not bill_id:
-            return text(f"bill_id is required", status=401)
-
-        source = gift.get('source', 'aqua_marketing')
-
-        gift.update({
-            "phone": phone,
-            "source": source,
-        })
-        aqua_auth = settings.get(f"dostyq_marketing_authorization/{request.credentials.username}")
-        result = await dostyq_marketing.send_gift(
-            dostyq_marketing_authorization=aqua_auth,
-            gift=gift
-        )
-        return text(send_gift_results.get(result), status=400 if result == -1 else 200)
-    except Exception as e:
-        logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
-        return text(f"send_gift error", status=400)

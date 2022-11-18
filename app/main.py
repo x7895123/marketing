@@ -7,6 +7,8 @@ import tortoise.contrib.sanic
 from dependencies.dependencies import register_dependencies
 from routes.login import bp as login_bp
 from routes.game import bp as game_bp
+from routes.bill import bp as bill_bp
+
 from routes.pages import routes as pages_routes
 from middlewares.middlewares import setup_middlewares
 
@@ -32,6 +34,7 @@ register_dependencies(app)
 # load routes
 app.blueprint(login_bp)
 app.blueprint(game_bp)
+app.blueprint(bill_bp)
 pages_routes(app)
 setup_middlewares(app)
 
