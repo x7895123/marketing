@@ -54,8 +54,12 @@ app.static('/static', './static', name='static')
 app.static('/img', './static/img', name='img')
 app.static('/css', './static/css', name='css')
 
-# # Rabbit Consumer Thread
-#
+# Rabbit Consumer Thread
+# calc_aqua_bonus = functools.partial(app.ctx.gift.send_delayed_gift, services=app.ctx)
+# app.ctx.charge_bonus_queue_name = f'charge_bonus_{str(settings.environment).lower()}'
+
+
+
 # # charge consumer
 # send_delayed_gift = functools.partial(app.ctx.gift.send_delayed_gift, services=app.ctx)
 # app.ctx.charge_bonus_queue_name = f'charge_bonus_{str(settings.environment).lower()}'
@@ -86,4 +90,4 @@ app.static('/css', './static/css', name='css')
 # app.listener('before_server_stop')(process_calculated_bill_consumer.close_connection)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8080, fast=True, debug=False, access_log=True)
+    app.run(host='0.0.0.0', port=8001, fast=True, debug=False, access_log=True)

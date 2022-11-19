@@ -3,6 +3,7 @@ import time
 from typing import Optional, Any, Coroutine
 
 import aio_pika
+import inflect
 import rapidjson
 from aio_pika import ExchangeType, Message, IncomingMessage
 from aio_pika.abc import AbstractIncomingMessage, AbstractRobustConnection
@@ -16,6 +17,18 @@ def parse_delay(days=0, hours=0, minutes=0, seconds=0):
            int(abs(hours)) * 60000 * 60 + \
            int(abs(minutes)) * 60000 + \
            int(abs(seconds)) * 1000
+
+
+def delay2name(delay):
+    p = inflect.engine()
+    hours = delay // (60000 * 60)
+    if hours > 0:
+        # print(f"{p.number_to_words(hours)}_hours")
+        return f"{p.number_to_words(hours)}_hours"
+    else:
+        minutes = delay // 60000
+        # print(f"{p.number_to_words(minutes)}_min")
+        return f"{p.number_to_words(minutes)}_min"
 
 
 class Rabbit:
@@ -64,19 +77,19 @@ class Rabbit:
             logger.info(f'is closed: {self.connection.is_closed}')
             self.connection = await self.connect()
 
-    async def ttl_publish(self, body, queue_name, delay=0):
+    async def ttl_publish(self, body, queue_name, hours=0, minutes=0):
         try:
-            delay = int(abs(delay))
             await self.check_connection()
 
             channel = await self.connection.channel()
             queue = await channel.declare_queue(queue_name, durable=True)
-            if delay == 0:
-                await channel.default_exchange.publish(Message(f'Zero{body}'.encode('utf-8')), routing_key=queue_name)
+            if hours + minutes == 0:
+                await channel.default_exchange.publish(Message(body.encode('utf-8')), routing_key=queue_name)
             else:
                 await queue.bind('amq.direct', queue_name)
                 delay_channel = await self.connection.channel()
-                delayed_queue_name = f'delayed_{delay}'
+                delay = 60000 * (hours * 60 if hours > 0 else minutes)
+                delayed_queue_name = f'{queue_name}_{delay2name(delay)}'
                 await delay_channel.declare_queue(delayed_queue_name, durable=True, arguments={
                         'x-message-ttl': delay,  # Delay until the message is transferred in milliseconds.
                         'x-dead-letter-exchange': 'amq.direct',  # Exchange used to transfer the message from A to B.

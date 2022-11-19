@@ -6,11 +6,11 @@ class MarketingBill(Model):
     create_ts = fields.DatetimeField(auto_now_add=True)
     company = fields.CharField(max_length=200)
     cashdesk = fields.CharField(max_length=200)
-    bill_no = fields.CharField(max_length=200, unique=True)
+    bill_id = fields.CharField(max_length=200, unique=True)
     phone = fields.CharField(max_length=50)
     amount = fields.IntField()
     paytime = fields.DatetimeField()
-    bill = fields.JSONField()
+    original_bill = fields.JSONField()
     task = fields.JSONField(null=True)
 
     cashbacks: fields.ReverseRelation["MarketingCashback"]
@@ -20,8 +20,8 @@ class MarketingBill(Model):
 
     def __str__(self):
         return f"marketing_bill id:{self.id}, create_ts:{self.create_ts}, company:{self.company}, " \
-               f"cashdesk:{self.cashdesk}, bill_no:{self.bill_no}, phone:{self.phone}, {self.amount}, " \
-               f"paytime:{self.paytime}, bill:{self.bill}, task:{self.task}"
+               f"cashdesk:{self.cashdesk}, bill_id:{self.bill_id}, phone:{self.phone}, {self.amount}, " \
+               f"paytime:{self.paytime}, bill:{self.original_bill}, task:{self.task}"
 
 
 class MarketingCashback(Model):
@@ -36,7 +36,7 @@ class MarketingCashback(Model):
     recipient_address = fields.CharField(max_length=200, null=True)
     contract_address = fields.CharField(max_length=200, null=True)
 
-    id_bill: fields.ForeignKeyRelation[MarketingBill] = fields.ForeignKeyField(
+    bill: fields.ForeignKeyRelation[MarketingBill] = fields.ForeignKeyField(
         "models.MarketingBill", related_name="cashbacks", to_field="id")
 
     class Meta:

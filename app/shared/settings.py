@@ -13,7 +13,6 @@ settings = {
             "user": "aqua",
             "password": "aquajkfmg7pdo5"
         },
-
         "dostyq_marketing_authorization": {
             "aqua": "Basic YXF1YWtyZzphcXVhSmtmbWc3cGRvNSE=",
         },

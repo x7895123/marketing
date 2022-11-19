@@ -2,6 +2,8 @@ import httpx
 import json
 from sanic.log import logger
 
+from app.shared.settings import dostyq_marketing_authorization
+
 
 async def get_auth_token(dostyq_marketing_authorization):
     try:
@@ -26,7 +28,7 @@ send_gift_results = {
 }
 
 
-async def send_gift(dostyq_marketing_authorization, gift: dict):
+async def send_gift(gift: dict):
     try:
         auth_token = await get_auth_token(dostyq_marketing_authorization)
         if auth_token:

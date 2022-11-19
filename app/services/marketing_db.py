@@ -38,7 +38,7 @@ async def add_bill(bill: dict, company):
             phone=phone,
             amount=amount,
             paytime=paytime,
-            bill=bill,
+            original_bill=bill,
             task=task
         )
         # logger.info(marketing_bill[0])
@@ -49,44 +49,14 @@ async def add_bill(bill: dict, company):
         )
         logger.info(marketing_cashback[0].__dict__)
         return marketing_bill, marketing_cashback
-
-
-        # sql = f"""
-        #         insert into public.marketing_bill (company,cashdesk,phone,company_bill_no,paytime,amount,bill,task)
-        #         values('{company}','{cashdesk}','{phone}','{bill_no}','{paytime}',{amount},'{rapidjson.dumps(bill)}','{task}')
-        #         ON CONFLICT ON CONSTRAINT marketing_bill_un DO NOTHING
-        #         RETURNING id
-        #     """
-        # logger.debug(sql)
-        # conn = Tortoise.get_connection("arena")
-        # result = await conn.execute_query_dict(sql)
-        # logger.debug(f"marketing add_bill: {result}")
-        # if result:
-        #     id_marketing_bill = int(result[0].get('id'))
-        #     logger.debug(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: id_marketing_bill {id_marketing_bill}")
-        #     body = {
-        #         'company': company,
-        #         'cashdesk': cashdesk,
-        #         'phone': phone,
-        #         'bill_no': bill_no,
-        #         'paytime': paytime,
-        #         'amount': amount,
-        #         'bill': bill,
-        #         'task': task,
-        #         'id_marketing_bill': id_marketing_bill
-        #     }
-        #     logger.debug(
-        #         f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: body {body}")
-        #     return {"body": body}
-        # else:
-        #     logger.debug(
-        #         f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: Company bill_no {bill_no} already exists"
-        #     )
-        #
-        #     return {"warning": f"Company bill_no {bill_no} already exists"}
     except Exception as e:
         logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
         return {"error": e}
+
+
+async def update_cashback(id_cashback, data: dict):
+    marketing_cashback = await bills.MarketingCashback.get(id=id_cashback)
+    await marketing_cashback.update_from_dict(data)
 
 
 async def get_cashback(bill_no):
