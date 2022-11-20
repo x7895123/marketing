@@ -4,6 +4,8 @@ from sanic import Sanic
 
 import tortoise.contrib.sanic
 
+from rabbit.consumer_rabbit import consume
+from rabbit.rabbit import Rabbit
 from dependencies.dependencies import register_dependencies
 from routes.login import bp as login_bp
 from routes.game import bp as game_bp
@@ -14,6 +16,8 @@ from middlewares.middlewares import setup_middlewares
 
 from shared import settings
 from shared.tools import *
+
+from aqua.calc_bonus import calc_aqua_bonus
 
 app = Sanic('Marketing')
 app.config.LOGGING = True
@@ -29,7 +33,11 @@ settings.config_name = 'prod'
 
 # injected objects
 tortoise.contrib.sanic.register_tortoise(app, config=settings.get('api'), generate_schemas=True)
-register_dependencies(app)
+rabbit_params = settings.get('arena_rabbit')
+logger.info(f"rabbit_params: {rabbit_params}")
+publisher = Rabbit(**rabbit_params)
+app.ctx.publisher = publisher
+# register_dependencies(app, publisher)
 
 # load routes
 app.blueprint(login_bp)
@@ -55,10 +63,6 @@ app.static('/img', './static/img', name='img')
 app.static('/css', './static/css', name='css')
 
 # Rabbit Consumer Thread
-# calc_aqua_bonus = functools.partial(app.ctx.gift.send_delayed_gift, services=app.ctx)
-# app.ctx.charge_bonus_queue_name = f'charge_bonus_{str(settings.environment).lower()}'
-
-
 
 # # charge consumer
 # send_delayed_gift = functools.partial(app.ctx.gift.send_delayed_gift, services=app.ctx)
@@ -71,17 +75,19 @@ app.static('/css', './static/css', name='css')
 # process_calculated_bill = functools.partial(app.ctx.bill.process_calculated_bill, services=app.ctx)
 # # process_calculated_bill_consumer = consume(
 #
-# callbacks = {
-#     app.ctx.charge_bonus_queue_name: send_delayed_gift,
-#     app.ctx.calculated_bill_queue_name: process_calculated_bill
-# }
-#
-# consume(
-#     app=app,
-#     callbacks=callbacks,
-#     max_retries=None,
-#     **rabbit_params
-# )
+calc_aqua_bonus_callback = functools.partial(calc_aqua_bonus, publisher=publisher)
+calc_aqua_bonus_queue_name = f'aqua_calc_bonus'
+
+callbacks = {
+    calc_aqua_bonus_queue_name: calc_aqua_bonus_callback,
+}
+
+consume(
+    app=app,
+    callbacks=callbacks,
+    max_retries=None,
+    **rabbit_params
+)
 
 # app.listener('before_server_start')(consumer.connect)
 # app.listener('after_server_start')(charge_bonus_consumer.go)

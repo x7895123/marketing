@@ -1,3 +1,6 @@
+import asyncio
+import inspect
+
 import httpx
 import json
 from sanic.log import logger
@@ -5,12 +8,14 @@ from sanic.log import logger
 from app.shared.settings import dostyq_marketing_authorization
 
 
-async def get_auth_token(dostyq_marketing_authorization):
+async def get_auth_token(company):
     try:
-        headers = {'Authorization': dostyq_marketing_authorization}
+        authorization = dostyq_marketing_authorization.get(company)
+        headers = {'Authorization': authorization}
         url = 'https://marketing.dostyq.app/login'
         async with httpx.AsyncClient() as client:
-            response = await client.request("POST", url, headers=headers, timeout=15)
+            response = await client.request(method="POST", url=url, headers=headers, timeout=15)
+
         if response.status_code == 200:
             logger.debug(f"get_auth_token: {response.content}")
             return response.text
@@ -18,7 +23,7 @@ async def get_auth_token(dostyq_marketing_authorization):
             logger.error(f"get_auth_token {response.status_code} {response.content}")
             return ""
     except Exception as e:
-        logger.error(f"get_auth_token: {e}")
+        logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
     return ""
 
 send_gift_results = {
@@ -28,9 +33,9 @@ send_gift_results = {
 }
 
 
-async def send_gift(gift: dict):
+async def send_gift(gift: dict, company):
     try:
-        auth_token = await get_auth_token(dostyq_marketing_authorization)
+        auth_token = await get_auth_token(company)
         if auth_token:
             url = "https://marketing.dostyq.app/send_gift"
 
@@ -51,10 +56,14 @@ async def send_gift(gift: dict):
             else:
                 logger.error(f'send_gift {response.text} {response.status_code}')
             return -1
+        else:
+            return -1
     except Exception as e:
-        logger.error(f"send_gift: {e}")
+        logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
         return -1
 
 
 if __name__ == '__main__':
-    pass
+    print(
+        asyncio.run(get_auth_token('aqua'))
+    )

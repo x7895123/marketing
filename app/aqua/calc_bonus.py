@@ -3,13 +3,15 @@ import inspect
 import math
 
 import rapidjson
+import tortoise.timezone
 from sanic.log import logger
 
 from app.rabbit.rabbit import Rabbit
 from app.services.aqua_api import dml_request
 from app.services.dostyq_marketing import send_gift
-from app.services.marketing_db import update_cashback
+# from app.services.marketing_db import update_cashback
 from app.shared.tools import clock_emoji
+from app.models import bills
 
 #####################################################################
 MIN_PAYMENT = 10000
@@ -27,94 +29,12 @@ FITNESS_TICKET_TOKEN_ID = 48
 FITNESS_ACTION_CASHBACK = 0.3
 FITNESS_ACTION_BEGIN_DATE = '2022-09-22'
 FITNESS_ACTION_END_DATE = '2022-10-07'
+
+
 #####################################################################
 
 
-def calc_aqua_bonus(message, publisher: Rabbit):
-    logger.debug(f"Received {message.body}")
-    bill = rapidjson.loads(message.body)
-
-    # index, idaccount, id_fitness_payment, summa, acc_close_date, phone, address, task = payment.values()
-    source = bill.get('source')
-    bill_id = bill.get('bill_id')
-    phone = bill.get('phone')
-    task = bill.get('task')
-
-    original_bill = bill.get('original_bill')
-    index = original_bill.get('index')
-
-    if not phone:
-        message.ack()
-        return
-
-    if source == 'cashback':
-        id_cashback = bill.get('id_cashback')
-        if task:
-            gift = {
-                "phone": phone,
-                "bill_id": bill_id,
-                "delay": 0,
-                **task
-            }
-            if await send_gift(gift) > 0:
-                update_cashback(id_cashback, {"sent_ts": datetime.datetime.now()})
-                sql = f"update ud_cashback set sent_date = cast('now' as date) where id = {index}"
-                dml_request(sql)
-                publisher.publish(message.body, 'aqua_spin')
-                logger.info(f"spin published {phone}")
-            else:
-                publisher.ttl_publish(message.body, 'aqua_calc_bonus', minutes=10)
-
-            message.ack()
-            return
-
-        idaccount = original_bill.get('idaccount')
-        id_fitness_payment = original_bill.get('id_fitness_payment')
-        payment = original_bill.get('payment')
-        guest_count = original_bill.get('guest_count', 0)
-        acc_close_date = original_bill.get('acc_close_date')
-
-        if idaccount:
-            task = calc_aqua_cashback(
-                acc_close_date=acc_close_date,
-                payment=payment,
-                guest_count=guest_count)
-        elif id_fitness_payment:
-            task = calc_fitness_cashback(acc_close_date, payment)
-
-        if task:
-            gift = {
-                "phone": phone,
-                "bill_id": bill_id,
-                "delay": 0,
-                **task
-            }
-            sql = f"update ud_cashback set task = '{rapidjson.dumps(task)}' where id = {index}"
-            dml_request(sql)
-
-            if await send_gift(gift) > 0:
-                update_cashback(id_cashback, {"sent_ts": datetime.datetime.now()})
-                sql = f"update ud_cashback set sent_date = cast('now' as date) where id = {index}"
-                dml_request(sql)
-                publisher.publish(message.body, 'aqua_spin')
-                logger.info(f"spin published {phone}")
-            else:
-                bill.update("task", task)
-                publisher.ttl_publish(rapidjson.dumps(bill), 'aqua_calc_bonus', minutes=10)
-        else:
-            update_cashback(id_cashback, {"sent_ts": datetime.datetime.now(), "error_message": "no bonus"})
-            sql = f"update ud_cashback set sent_date = cast('now' as date), description = 'no bonus' where id = {index}"
-            dml_request(sql)
-
-        message.ack()
-        return
-
-    sql = f"update ud_cashback set sent_date = cast('now' as date), description = 'no bonus' where id = {index}"
-    dml_request(sql)
-    message.ack()
-
-
-def update_send_gift(bill_no, index, phone, delay, task: dict):
+async def calc_aqua_bonus(message, publisher: Rabbit):
     """
     gift = {
           "ids1": [4, 51],
@@ -130,29 +50,87 @@ def update_send_gift(bill_no, index, phone, delay, task: dict):
     send_gift = 1 - уже было отправлено
     send_gift = -1 - ошибка отправки
     """
-    # Save to task field calc bonus
-    sql = f"update ud_cashback set task = '{rapidjson.dumps(task)}' where id = {index}"
-    dml_request(sql)
 
-    payload = {
-        "phone": phone,
-        "bill_id": bill_no,
-        "delay": int(delay)
-    }
+    logger.debug(f"Received {message.body}")
+    bill = rapidjson.loads(message.body)
 
-    result = send_gift(payload)
-    logger.info(f"send_gift result: {result}")
-    if result >= 0:
-        if index == bill_id:
-            sql = f"update ud_cashback set sent_date = cast('now' as date) where id = {index}"
+    # index, idaccount, id_fitness_payment, summa, acc_close_date, phone, address, task = payment.values()
+    company = bill.get('company')
+    assignment = bill.get('assignment')
+    bill_id = bill.get('bill_id')
+    phone = bill.get('phone')
+    task = bill.get('task')
+
+    original_bill = bill.get('original_bill')
+    index = original_bill.get('index')
+
+    if assignment == 'cashback':
+        id_gift = bill.get('id_gift')
+        if task:
+            gift = {
+                "phone": phone,
+                "bill_id": f"{company}-{assignment}-{id_gift}",
+                "delay": 0,
+                **task
+            }
+            if await send_gift(gift, company) >= 0:
+                # await update_cashback(id_cashback, {"sent_ts": datetime.datetime.now()})
+                await bills.MarketingGift.filter(id=id_gift).update(sent_ts=tortoise.timezone.now())
+                sql = f"update ud_cashback set sent_date = cast('now' as date) where id = {index}"
+                await dml_request(sql)
+                await publisher.publish(message.body, 'aqua_spin')
+                logger.info(f"spin published {phone}")
+            else:
+                await publisher.ttl_publish(message.body, 'aqua_calc_bonus', minutes=10)
+
+            await message.ack()
+            return
+
+        idaccount = original_bill.get('idaccount')
+        id_fitness_payment = original_bill.get('id_fitness_payment')
+        payment = original_bill.get('payment')
+        guest_count = original_bill.get('guest_count') or 0
+        acc_close_date = original_bill.get('acc_close_date')
+
+        if idaccount:
+            task = calc_aqua_cashback(
+                acc_close_date=acc_close_date,
+                payment=payment,
+                guest_count=guest_count)
+        elif id_fitness_payment:
+            task = calc_fitness_cashback(acc_close_date, payment)
+
+        if task:
+            bill.update({"task": task})
+            gift = {
+                "phone": phone,
+                "bill_id": f"{company}-{assignment}-{id_gift}",
+                "delay": 0,
+                **task
+            }
+            # await update_cashback(id_cashback, {"deal": task})
+            await bills.MarketingGift.filter(id=id_gift).update(deal=task)
+            sql = f"update ud_cashback set task = '{rapidjson.dumps(task).encode('utf-8')}' where id = {index}"
+            await dml_request(sql)
+
+            if await send_gift(gift, company) >= 0:
+                # await update_cashback(id_cashback, {"sent_ts": datetime.datetime.now()})
+                await bills.MarketingGift.filter(id=id_gift).update(sent_ts=tortoise.timezone.now())
+                sql = f"update ud_cashback set sent_date = cast('now' as date) where id = {index}"
+                await dml_request(sql)
+                await publisher.publish(rapidjson.dumps(bill), 'aqua_spin')
+                logger.info(f"spin published {phone}")
+            else:
+                await publisher.ttl_publish(rapidjson.dumps(bill), 'aqua_calc_bonus', minutes=10)
         else:
-            sql = f"update ud_cashback set present_date = cast('now' as date) where id = {index}"
-        dml_request(sql)
-    else:
-        gift.update({"task": task})
-        body = rapidjson.dumps(gift)
-        publisher.publish(body=body, queue_name='calc_aqua_bonus', minutes=40)
-    return result == 0
+            # await update_cashback(id_cashback, {"sent_ts": datetime.datetime.now(), "error_message": "no bonus"})
+            # await update_cashback(id_cashback, {"error_message": "no bonus"})
+            await bills.MarketingGift.filter(id=id_gift).update(note="no bonus")
+            sql = f"update ud_cashback set sent_date = cast('now' as date), description = 'no bonus' where id = {index}"
+            await dml_request(sql)
+
+    await message.ack()
+    return
 
 
 def is_weekend(d=datetime.datetime.today()):
@@ -163,12 +141,14 @@ def calc_aqua_cashback(acc_close_date, payment, guest_count):
     if payment < MIN_PAYMENT:
         return {}
 
-    t = datetime.datetime.strptime(acc_close_date, '%d.%m.%y %H:%M:%S')
+    t = datetime.datetime.strptime(acc_close_date, '%Y-%m-%d %H:%M:%S')
     cashback_percent = WEEKENDS_CASHBACK if is_weekend(t) else CASHBACK
 
     cashback = round(payment * cashback_percent)
 
-    tickets_amount = math.trunc(guest_count / TICKET_GUEST_COUNT) if guest_count >= MIN_GUEST_COUNT else 0
+    tickets_amount = math.trunc(guest_count / TICKET_GUEST_COUNT) \
+        if guest_count >= MIN_GUEST_COUNT \
+        else 0
     if tickets_amount > 0:
         amounts1 = [cashback, tickets_amount]
         ids1 = [TOKEN_ID, TICKET_TOKEN_ID]
@@ -178,14 +158,16 @@ def calc_aqua_cashback(acc_close_date, payment, guest_count):
             ticket_msg = f'{tickets_amount} Билета'
         else:
             ticket_msg = f'{tickets_amount} Билетов'
-        msg = f"💰АкваКэш+BONUS {cashback}={payment}✖{int(cashback_percent * 100)}% + {ticket_msg} 🗓{t.strftime('%d.%m.%y')}{clock_emoji(t)}{t.strftime('%H:%M')}"
+        msg = f"💰АкваКэш+BONUS {cashback}={payment}✖{int(cashback_percent * 100)}% + {ticket_msg} " \
+              f"🗓{t.strftime('%d.%m.%y')}{clock_emoji(t)}{t.strftime('%H:%M')}"
     else:
         amounts1 = [cashback]
         ids1 = [TOKEN_ID]
-        msg = f"💰АкваКэш {cashback}={payment}✖{int(cashback_percent * 100)}% 🗓{t.strftime('%d.%m.%y')}{clock_emoji(t)}{t.strftime('%H:%M')}"
+        msg = f"💰АкваКэш {cashback}={payment}✖{int(cashback_percent * 100)}% " \
+              f"🗓{t.strftime('%d.%m.%y')}{clock_emoji(t)}{t.strftime('%H:%M')}"
 
     task = {
-        'ids': ids1,
+        'ids1': ids1,
         'amounts1': amounts1,
         'msg': msg
     }
@@ -197,7 +179,7 @@ def calc_fitness_cashback(acc_close_date, payment):
     if payment < FITNESS_MIN_PAYMENT:
         return {}
 
-    t = datetime.datetime.strptime(acc_close_date, '%d.%m.%y %H:%M:%S')
+    t = datetime.datetime.strptime(acc_close_date, '%Y-%m-%d %H:%M:%S')
     action_begin_date = datetime.datetime.strptime(FITNESS_ACTION_BEGIN_DATE, '%Y-%m-%d')
     action_end_date = datetime.datetime.strptime(FITNESS_ACTION_END_DATE, '%Y-%m-%d')
 
@@ -218,7 +200,7 @@ def calc_fitness_cashback(acc_close_date, payment):
     msg = f"💰АкваКэш+BONUS {cashback}={payment}✖{int(cashback_percent * 100)}% + {ticket_msg} 🗓{t.strftime('%d.%m.%y')}{clock_emoji(t)}{t.strftime('%H:%M')}"
 
     task = {
-        'ids': ids1,
+        'ids1': ids1,
         'amounts1': amounts1,
         'msg': msg
     }

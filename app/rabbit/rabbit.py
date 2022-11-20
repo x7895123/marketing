@@ -1,3 +1,4 @@
+import inspect
 import json
 import time
 from typing import Optional, Any, Coroutine
@@ -65,7 +66,7 @@ class Rabbit:
                 return rapidjson.loads(message.body)
 
         except Exception as e:
-            logger.error(f'publish get: {e}')
+            logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
             await self.connection.close()
             return False
 
@@ -89,7 +90,9 @@ class Rabbit:
                 await queue.bind('amq.direct', queue_name)
                 delay_channel = await self.connection.channel()
                 delay = 60000 * (hours * 60 if hours > 0 else minutes)
+                logger.info(f'delay: {delay}')
                 delayed_queue_name = f'{queue_name}_{delay2name(delay)}'
+                logger.info(f'delayed_queue_name: {delayed_queue_name}')
                 await delay_channel.declare_queue(delayed_queue_name, durable=True, arguments={
                         'x-message-ttl': delay,  # Delay until the message is transferred in milliseconds.
                         'x-dead-letter-exchange': 'amq.direct',  # Exchange used to transfer the message from A to B.
@@ -99,7 +102,7 @@ class Rabbit:
                                                              routing_key=delayed_queue_name)
                 return True
         except Exception as e:
-            logger.error(f'simple_publish: {e}')
+            logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
             await self.connection.close()
             return False
 
@@ -132,7 +135,7 @@ class Rabbit:
                 )
             return True
         except Exception as e:
-            logger.error(f'simple_publish: {e}')
+            logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
             await self.connection.close()
             return False
 
