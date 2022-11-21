@@ -1,7 +1,7 @@
 import asyncio
 import httpx
 
-from app.shared.settings import aqua_api_host
+from shared.settings import aqua_api_host
 from sanic.log import logger
 
 

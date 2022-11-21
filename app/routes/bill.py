@@ -7,13 +7,8 @@ from sanic import text, exceptions, json
 from sanic.log import logger
 from sanic import Blueprint
 
-from app.models import bills
-from app.rabbit.rabbit import Rabbit
-from app.routes.login import verify_password
-from app.services import dostyq_marketing
-from app.services.dostyq_marketing import send_gift_results
-from app.services import marketing_db
-from app.shared import settings, tools
+from routes.login import verify_password
+from services import marketing_db
 
 bp = Blueprint("bill")
 

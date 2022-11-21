@@ -5,7 +5,7 @@ import httpx
 import json
 from sanic.log import logger
 
-from app.shared.settings import dostyq_marketing_authorization
+from shared.settings import dostyq_marketing_authorization
 
 
 async def get_auth_token(company):

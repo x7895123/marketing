@@ -6,8 +6,8 @@ import rapidjson
 import datetime
 from sanic.log import logger
 
-from app.models import bills
-from app.shared import tools
+from models import bills
+from shared import tools
 
 
 def d():
