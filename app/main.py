@@ -4,9 +4,9 @@ from sanic import Sanic
 
 import tortoise.contrib.sanic
 
+from app.send_gift_callback.send_gift import send_gift
 from rabbit.consumer_rabbit import consume
 from rabbit.rabbit import Rabbit
-from dependencies.dependencies import register_dependencies
 from routes.login import bp as login_bp
 from routes.game import bp as game_bp
 from routes.bill import bp as bill_bp
@@ -17,7 +17,7 @@ from middlewares.middlewares import setup_middlewares
 from shared import settings
 from shared.tools import *
 
-from aqua.calc_bonus import calc_aqua_bonus
+from app.calc_bonus_callbacks.aqua_calc_bonus import calc_aqua_bonus
 
 app = Sanic('Marketing')
 app.config.LOGGING = True
@@ -75,11 +75,19 @@ app.static('/css', './static/css', name='css')
 # process_calculated_bill = functools.partial(app.ctx.bill.process_calculated_bill, services=app.ctx)
 # # process_calculated_bill_consumer = consume(
 #
-calc_aqua_bonus_callback = functools.partial(calc_aqua_bonus, publisher=publisher)
+calc_aqua_bonus_callback = functools.partial(
+    calc_aqua_bonus, publisher=publisher
+)
 calc_aqua_bonus_queue_name = f'aqua_calc_bonus'
+
+send_gift_callback = functools.partial(
+    send_gift, publisher=publisher
+)
+send_gift_queue_name = f'send_gift'
 
 callbacks = {
     calc_aqua_bonus_queue_name: calc_aqua_bonus_callback,
+    send_gift_queue_name: send_gift_callback,
 }
 
 consume(
@@ -89,11 +97,6 @@ consume(
     **rabbit_params
 )
 
-# app.listener('before_server_start')(consumer.connect)
-# app.listener('after_server_start')(charge_bonus_consumer.go)
-# app.listener('after_server_start')(process_calculated_bill_consumer.go)
-# app.listener('before_server_stop')(charge_bonus_consumer.close_connection)
-# app.listener('before_server_stop')(process_calculated_bill_consumer.close_connection)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8001, fast=True, debug=False, access_log=True)

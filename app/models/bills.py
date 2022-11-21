@@ -12,7 +12,8 @@ class MarketingBill(Model):
     amount = fields.IntField()
     paytime = fields.DatetimeField()
     original_bill = fields.JSONField()
-    task = fields.JSONField(null=True)
+    deal = fields.JSONField(null=True)
+    published = fields.BooleanField(null=True, default=False)
 
     gifts: fields.ReverseRelation["MarketingGift"]
 
@@ -20,9 +21,11 @@ class MarketingBill(Model):
         table = "marketing_bill"
 
     def __str__(self):
-        return f"marketing_bill id:{self.id}, create_ts:{self.create_ts}, company:{self.company}, " \
-               f"cashdesk:{self.cashdesk}, bill_id:{self.company_bill_id}, phone:{self.phone}, {self.amount}, " \
-               f"paytime:{self.paytime}, bill:{self.original_bill}, task:{self.task}"
+        return f"marketing_bill id:{self.id}, create_ts:{self.create_ts}, " \
+               f"company:{self.company}, cashdesk:{self.cashdesk}, " \
+               f"bill_id:{self.company_bill_id}, phone:{self.phone}, " \
+               f"amount {self.amount}, paytime:{self.paytime}, " \
+               f"bill:{self.original_bill}, task:{self.deal}"
 
 
 class MarketingGift(Model):
@@ -30,10 +33,10 @@ class MarketingGift(Model):
     assignment = fields.CharField(max_length=255, index=True)
     create_ts = fields.DatetimeField(auto_now_add=True)
     modified_ts = fields.DatetimeField(auto_now=True)
-    phone = fields.CharField(max_length=50, index=True)
     sent_ts = fields.DatetimeField(null=True)
     expiration_ts = fields.DatetimeField(null=True)
     deal = fields.JSONField(null=True)
+    screen_msg = fields.CharField(max_length=1024, null=True)
     note = fields.CharField(max_length=255, null=True)
     published = fields.BooleanField(null=True, default=False)
 
@@ -44,6 +47,7 @@ class MarketingGift(Model):
         table = "marketing_gift"
 
     def __str__(self):
-        return f"marketing_cashback {self.id}, create_ts:{self.create_ts}, phone:{self.phone}, " \
-               f"sent_ts:{self.sent_ts}, expiration_ts:{self.expiration_ts}, deal:{self.deal}, " \
-               f"note:{self.note}"
+        return f"marketing_cashback {self.id}, create_ts:{self.create_ts}, " \
+               f"sent_ts:{self.sent_ts}, expiration_ts:{self.expiration_ts}, " \
+               f"deal:{self.deal}, note:{self.note}, " \
+               f"published:{self.published}, bill_id:{self.bill}"

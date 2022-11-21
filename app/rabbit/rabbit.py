@@ -56,19 +56,21 @@ class Rabbit:
             except KeyboardInterrupt:
                 break
 
-    async def get(self, queue_name) -> Coroutine[Any, Any, AbstractIncomingMessage | None] | bool:
+    async def get(self, queue_name):
         try:
             await self.check_connection()
             channel = await self.connection.channel()
             queue = await channel.declare_queue(queue_name, durable=True)
-            message = await queue.get()
-            async with message.process():
-                return rapidjson.loads(message.body)
-
+            message = await queue.get(fail=False)
+            if message:
+                async with message.process():
+                    return message
+            else:
+                return None
         except Exception as e:
             logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
             await self.connection.close()
-            return False
+            return None
 
     async def check_connection(self):
         if not self.connection:
