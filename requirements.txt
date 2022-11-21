@@ -11,9 +11,7 @@ sanic-ext
 sanic-httpauth
 secure~=0.3.0
 tortoise-orm
-eth-account
 inflect
 phonenumbers~=8.13.0
 python-dateutil~=2.8.2
 PyJWT~=2.6.0
-multipledispatch~=0.6.0

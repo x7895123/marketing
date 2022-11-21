@@ -32,7 +32,7 @@ ADD ./requirements.txt /app
 #                       gcc \
 #                       libc-dev
 # RUN apk add --no-cache gcc libc-dev
-RUN apk add  --no-cache libffi-dev build-base
+#RUN apk add  --no-cache libffi-dev build-base
 
 
 # Install any needed packages specified in requirements.txt
