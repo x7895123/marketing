@@ -4,7 +4,7 @@ from sanic import Sanic
 
 import tortoise.contrib.sanic
 
-from app.send_gift_callback.send_gift import send_gift
+from send_gift_callback.send_gift import send_gift
 from rabbit.consumer_rabbit import consume
 from rabbit.rabbit import Rabbit
 from routes.login import bp as login_bp
@@ -17,7 +17,7 @@ from middlewares.middlewares import setup_middlewares
 from shared import settings
 from shared.tools import *
 
-from app.calc_bonus_callbacks.aqua_calc_bonus import calc_aqua_bonus
+from calc_bonus_callbacks.aqua_calc_bonus import calc_aqua_bonus
 
 app = Sanic('Marketing')
 app.config.LOGGING = True
