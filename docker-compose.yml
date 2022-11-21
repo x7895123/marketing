@@ -27,5 +27,5 @@ services:
       marketing:
         ipv4_address: 14.10.0.4
     ports:
-      - 8000:8000
+      - 8001:8001
     command: python main.py
