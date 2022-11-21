@@ -1,16 +1,10 @@
 import inspect
 import json
 import time
-from typing import Optional, Any, Coroutine
-
 import aio_pika
 import inflect
-import rapidjson
 from aio_pika import ExchangeType, Message, IncomingMessage
-from aio_pika.abc import AbstractIncomingMessage, AbstractRobustConnection
 from sanic.log import logger
-
-from app.shared.settings import get
 
 
 def parse_delay(days=0, hours=0, minutes=0, seconds=0):
