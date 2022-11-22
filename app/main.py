@@ -79,6 +79,7 @@ calc_aqua_bonus_callback = functools.partial(
     calc_aqua_bonus, publisher=publisher
 )
 calc_aqua_bonus_queue_name = f'aqua_calc_bonus'
+calc_kiiik_bonus_queue_name = "kiiik_calc_bonus"
 
 send_gift_callback = functools.partial(
     send_gift, publisher=publisher
@@ -87,6 +88,7 @@ send_gift_queue_name = f'send_gift'
 
 callbacks = {
     calc_aqua_bonus_queue_name: calc_aqua_bonus_callback,
+    calc_kiiik_bonus_queue_name: calc_aqua_bonus_callback,
     send_gift_queue_name: send_gift_callback,
 }
 
