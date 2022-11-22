@@ -34,6 +34,9 @@ send_gift_results = {
 async def send_gift(gift: dict, company):
     try:
         auth_token = await get_auth_token(company)
+        logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
+                    f'{inspect.stack()[0][3]}: auth_token {auth_token}')
+
         if auth_token:
             url = "https://marketing.dostyq.app/send_gift"
 
@@ -46,7 +49,9 @@ async def send_gift(gift: dict, company):
                 response = await client.post(url=url, headers=headers, json=gift, timeout=10)
 
             if response.status_code == 200:
-                logger.info(f'send_gift: {response.text}')
+                logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
+                            f'{inspect.stack()[0][3]}: '
+                            f'response.text {response.text}')
                 return 0
             elif 'already exists' in response.text:
                 logger.info(f'send_gift: {response.text}')

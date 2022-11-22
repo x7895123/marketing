@@ -26,6 +26,10 @@ async def send_gift(message, publisher: Rabbit):
 
     try:
         logger.debug(f"Send Gift Received {message.body}")
+
+        logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
+                    f'{inspect.stack()[0][3]}: Send Gift Received {message.body}')
+
         bill_dict = rapidjson.loads(message.body)
         gift_id = bill_dict.get('gift_id')
         gift = await bills.MarketingGift.get(id=gift_id)
@@ -46,6 +50,9 @@ async def send_gift(message, publisher: Rabbit):
             "delay": 0,
             **deal
         }
+
+        logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
+                    f'{inspect.stack()[0][3]}: gift_dict {gift_dict}')
 
         if await dostyq_marketing.send_gift(gift_dict, company) >= 0:
             await bills.MarketingGift.filter(id=gift_id).update(
