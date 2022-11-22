@@ -25,7 +25,7 @@ class MarketingBill(Model):
                f"company:{self.company}, cashdesk:{self.cashdesk}, " \
                f"bill_id:{self.company_bill_id}, phone:{self.phone}, " \
                f"amount {self.amount}, paytime:{self.paytime}, " \
-               f"bill:{self.original_bill}, task:{self.deal}"
+               f"bill:{self.original_bill}, deal:{self.deal}"
 
 
 class MarketingGift(Model):

@@ -25,7 +25,7 @@ async def add_bill(bill: dict, company):
         paytime = bill.get('paytime', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         amount = bill.get('amount')
         amount = int(amount) if amount else 0
-        deal = bill.get('task', {})
+        deal = bill.get('deal', {})
 
         marketing_bill = await bills.MarketingBill.get_or_create(
             company=company,
