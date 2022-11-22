@@ -15,13 +15,21 @@ async def get_auth_token(company):
             response = await client.request(method="POST", url=url, headers=headers, timeout=15)
 
         if response.status_code == 200:
-            logger.debug(f"get_auth_token: {response.content}")
+            logger.debug(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
+                         f'{inspect.stack()[0][3]}:'
+                         f'{response.status_code} {response.content}')
             return response.text
         else:
+            logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
+                         f'{inspect.stack()[0][3]}:'
+                         f'{response.status_code} {response.content}')
+
             logger.error(f"get_auth_token {response.status_code} {response.content}")
             return ""
     except Exception as e:
-        logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
+        logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
+                     f'{inspect.stack()[0][3]}: {e}')
+
     return ""
 
 send_gift_results = {

@@ -15,6 +15,8 @@ settings = {
         },
         "dostyq_marketing_authorization": {
             "aqua": "Basic YXF1YWtyZzphcXVhSmtmbWc3cGRvNSE=",
+            "kiiik": "Basic YXF1YWtyZzphcXVhSmtmbWc3cGRvNSE=",
+            "arena": "Basic YXF1YWtyZzphcXVhSmtmbWc3cGRvNSE=",
         },
         "aqua_api_host": "192.168.90.221:4042",
         "api": {
