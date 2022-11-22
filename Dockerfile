@@ -1,4 +1,4 @@
-#docker exec -it $(docker ps -f name=arena_calc-bonus --format "{{.ID}}") /bin/sh
+#docker exec -it $(docker ps -f name=marketing_app --format "{{.ID}}") /bin/sh
 # docker rmi $(docker images | grep marketing)
 
 #FROM python:3.8.7
