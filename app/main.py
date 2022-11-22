@@ -4,6 +4,9 @@ from sanic import Sanic
 
 import tortoise.contrib.sanic
 
+from app.calc_bonus_callbacks.kiiik_calc_bonus import calc_kiiik_bonus
+from app.calc_bonus_callbacks.aqua_calc_bonus import calc_aqua_bonus
+
 from app.send_gift_callback.send_gift import send_gift
 from app.rabbit.consumer_rabbit import consume
 from app.rabbit.rabbit import Rabbit
@@ -17,7 +20,7 @@ from app.middlewares.middlewares import setup_middlewares
 from app.shared import settings
 from app.shared.tools import *
 
-from app.calc_bonus_callbacks.aqua_calc_bonus import calc_aqua_bonus
+
 
 app = Sanic('Marketing')
 app.config.LOGGING = True
@@ -75,12 +78,19 @@ app.static('/css', './static/css', name='css')
 # process_calculated_bill = functools.partial(app.ctx.bill.process_calculated_bill, services=app.ctx)
 # # process_calculated_bill_consumer = consume(
 #
+# aqua
 calc_aqua_bonus_callback = functools.partial(
     calc_aqua_bonus, publisher=publisher
 )
 calc_aqua_bonus_queue_name = f'aqua_calc_bonus'
+
+# kiiik
+calc_kiiik_bonus_callback = functools.partial(
+calc_kiiik_bonus, publisher=publisher
+)
 calc_kiiik_bonus_queue_name = "kiiik_calc_bonus"
 
+# send gift
 send_gift_callback = functools.partial(
     send_gift, publisher=publisher
 )
