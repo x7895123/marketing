@@ -2,9 +2,9 @@ import inspect
 import rapidjson
 import tortoise.timezone
 from sanic.log import logger
-from rabbit.rabbit import Rabbit
-from services import dostyq_marketing
-from models import bills
+from ..rabbit.rabbit import Rabbit
+from ..services import dostyq_marketing
+from ..models import bills
 
 
 async def send_gift(message, publisher: Rabbit):

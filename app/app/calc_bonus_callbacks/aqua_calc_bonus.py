@@ -5,9 +5,9 @@ import math
 import rapidjson
 from sanic.log import logger
 
-from rabbit.rabbit import Rabbit
-from shared.tools import clock_emoji
-from models import bills
+from ..rabbit.rabbit import Rabbit
+from ..shared.tools import clock_emoji
+from ..models import bills
 
 #####################################################################
 MIN_PAYMENT = 10000

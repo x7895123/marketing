@@ -7,8 +7,8 @@ from sanic import text, exceptions, json
 from sanic.log import logger
 from sanic import Blueprint
 
-from models import bills
-from routes.login import verify_password
+from ..models import bills
+from ..routes.login import verify_password
 
 bp = Blueprint("game")
 

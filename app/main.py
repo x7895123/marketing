@@ -4,20 +4,20 @@ from sanic import Sanic
 
 import tortoise.contrib.sanic
 
-from send_gift_callback.send_gift import send_gift
-from rabbit.consumer_rabbit import consume
-from rabbit.rabbit import Rabbit
-from routes.login import bp as login_bp
-from routes.game import bp as game_bp
-from routes.bill import bp as bill_bp
+from app.send_gift_callback.send_gift import send_gift
+from app.rabbit.consumer_rabbit import consume
+from app.rabbit.rabbit import Rabbit
+from app.routes.login import bp as login_bp
+from app.routes.game import bp as game_bp
+from app.routes.bill import bp as bill_bp
 
-from routes.pages import routes as pages_routes
-from middlewares.middlewares import setup_middlewares
+from app.routes.pages import routes as pages_routes
+from app.middlewares.middlewares import setup_middlewares
 
-from shared import settings
-from shared.tools import *
+from app.shared import settings
+from app.shared.tools import *
 
-from calc_bonus_callbacks.aqua_calc_bonus import calc_aqua_bonus
+from app.calc_bonus_callbacks.aqua_calc_bonus import calc_aqua_bonus
 
 app = Sanic('Marketing')
 app.config.LOGGING = True
