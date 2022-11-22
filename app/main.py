@@ -99,5 +99,5 @@ consume(
 
 
 if __name__ == "__main__":
-    # app.run(host='0.0.0.0', port=8001, fast=True, debug=False, access_log=True)
-    app.run(port=8000, fast=True, debug=False, access_log=True)
+    app.run(host='0.0.0.0', port=8000, fast=True, debug=False, access_log=True)
+    # app.run(port=8000, fast=True, debug=False, access_log=True)
