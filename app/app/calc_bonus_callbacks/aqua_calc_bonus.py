@@ -32,7 +32,9 @@ FITNESS_ACTION_END_DATE = '2022-10-07'
 
 async def calc_aqua_bonus(message, publisher: Rabbit):
     try:
-        logger.debug(f"calc_aqua_bonus Received {message.body}")
+        logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
+                    f'{inspect.stack()[0][3]}: start {message.body}')
+
         bill_dict = rapidjson.loads(message.body)
 
         bill_id = bill_dict.get('bill_id')
@@ -98,7 +100,8 @@ async def add_and_publish_cashback(
         bill_id=bill_id,
     )
     gift = gift[0]
-    logger.info(f'gift as cashback {gift}')
+    logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
+                f'{inspect.stack()[0][3]}: gift as cashback {gift}')
     if not gift.published:
         gift.deal = deal
         gift.screen_msg = screen_msg
