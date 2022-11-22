@@ -23,6 +23,13 @@ async def send_gift(message, publisher: Rabbit):
     send_gift = 1 - уже было отправлено
     send_gift = -1 - ошибка отправки
     """
+    try:
+        bill_dict = rapidjson.loads(message.body)
+    except Exception as e:
+        logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
+                     f'{inspect.stack()[0][3]}: {e}')
+        await message.ack()
+        return
 
     try:
         logger.debug(f"Send Gift Received {message.body}")
@@ -30,7 +37,6 @@ async def send_gift(message, publisher: Rabbit):
         logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
                     f'{inspect.stack()[0][3]}: Send Gift Received {message.body}')
 
-        bill_dict = rapidjson.loads(message.body)
         gift_id = bill_dict.get('gift_id')
         gift = await bills.MarketingGift.get(id=gift_id)
         bill_id = gift.bill_id
@@ -68,7 +74,7 @@ async def send_gift(message, publisher: Rabbit):
 
         else:
             await publisher.ttl_publish(
-                body=message.body,
+                body=rapidjson.dumps(bill_dict),
                 queue_name='send_gift',
                 minutes=10
             )
@@ -77,7 +83,8 @@ async def send_gift(message, publisher: Rabbit):
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
         await publisher.ttl_publish(
-            body=message.body,
+            body=rapidjson.dumps(bill_dict),
             queue_name='send_gift',
             minutes=10
         )
+        await message.ack()
