@@ -1,9 +1,3 @@
-d = {1: 1, 2: 2}
+import uuid
 
-s = {
-    **d,
-    3: 3
-}
-
-print(d)
-print(s)
+print(uuid.uuid4())

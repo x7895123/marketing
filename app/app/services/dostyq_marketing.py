@@ -1,8 +1,6 @@
 import asyncio
 import inspect
-
 import httpx
-import json
 from sanic.log import logger
 
 from ..shared.settings import dostyq_marketing_authorization

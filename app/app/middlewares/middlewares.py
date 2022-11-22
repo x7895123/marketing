@@ -15,11 +15,11 @@ def setup_middlewares(app):
 
     @app.middleware("request")
     async def extract_company(request):
-        print(f"extract_company request.token: {request.token}")
-        # if token := request.token:
+        logger.info(f"extract_company request.token: {request.token}")
         try:
-            request.ctx.company = request.credentials.username
-            logger.info(f"extract_company : {request.ctx.company}")
+            if str(request.token).startswith('Basic'):
+                request.ctx.company = request.credentials.username
+                logger.info(f"extract_company : {request.ctx.company}")
         except Exception as e:
             logger.warning(f"extract_company exception: {e}")
             request.ctx.company = None

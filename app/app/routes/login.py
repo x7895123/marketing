@@ -34,14 +34,19 @@ async def verify_password(request):
         return False
 
 
-async def gen_token():
+async def gen_token(company):
     dt = datetime.now(tz=timezone.utc) + timedelta(days=2)
-    return jwt.encode({'exp': dt}, secret, algorithm='HS256')
+    return jwt.encode(
+        {'exp': dt, 'company': company},
+        secret,
+        algorithm='HS256'
+    )
 
 
-async def verify_token(token):
+async def verify_token(request):
     try:
-        jwt.decode(token, secret, algorithms=["HS256"])
+        decoded = jwt.decode(request.token, secret, algorithms=["HS256"])
+        request.ctx.company = decoded['company']
         return True
     except jwt.ExpiredSignatureError as e:
         logger.error(f"verify_token - {e}")
@@ -79,7 +84,7 @@ async def login(request: Request):
         if not await verify_password(request=request):
             return text(f"Basic Authentication error", status=400)
 
-        if token := await gen_token():
+        if token := await gen_token(request.ctx.company):
             return text(token)
         else:
             return text(f"Getting Bearer Authentication error", status=400)
