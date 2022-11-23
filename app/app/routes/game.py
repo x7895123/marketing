@@ -65,7 +65,7 @@ async def get_spin(request):
         return json(f"get_spin error", status=400)
 
 
-@bp.route("/get_items", methods=["GET, POST"])
+@bp.route("/get_items", methods=["GET"])
 @openapi.definition(
     secured={"basicAuth": []},
     summary="Получение items Фортуны",
