@@ -32,8 +32,6 @@ async def send_gift(message, publisher: Rabbit):
         return
 
     try:
-        logger.debug(f"Send Gift Received {message.body}")
-
         logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
                     f'{inspect.stack()[0][3]}: Send Gift Received {message.body}')
 
@@ -60,10 +58,14 @@ async def send_gift(message, publisher: Rabbit):
         logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
                     f'{inspect.stack()[0][3]}: gift_dict {gift_dict}')
 
-        if await dostyq_marketing.send_gift(gift_dict, company) >= 0:
-            await bills.MarketingGift.filter(id=gift_id).update(
-                sent_ts=tortoise.timezone.now()
-            )
+        result, result_msg = await dostyq_marketing.send_gift(gift_dict, company)
+        if result >= 0:
+            gift.sent_ts = tortoise.timezone.now()
+            gift.note = result_msg
+            await gift.save()
+            # await bills.MarketingGift.filter(id=gift_id).update(
+            #     sent_ts=tortoise.timezone.now(), note=result_msg
+            # )
             if screen_msg:
                 screen_msg_queue_name = f"{company}_{cashdesk}_show_bonus"
                 body = rapidjson.dumps({"comment": gift.screen_msg})
@@ -73,6 +75,8 @@ async def send_gift(message, publisher: Rabbit):
                 )
 
         else:
+            gift.note = result_msg
+            await gift.save()
             await publisher.ttl_publish(
                 body=rapidjson.dumps(bill_dict),
                 queue_name='send_gift',

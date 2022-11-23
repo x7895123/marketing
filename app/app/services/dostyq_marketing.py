@@ -60,18 +60,18 @@ async def send_gift(gift: dict, company):
                 logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
                             f'{inspect.stack()[0][3]}: '
                             f'response.text {response.text}')
-                return 0
+                return 0, response.text
             elif 'already exists' in response.text:
                 logger.info(f'send_gift: {response.text}')
-                return 1
+                return 1, response.text
             else:
                 logger.error(f'send_gift {response.text} {response.status_code}')
-            return -1
+            return -1, response.text
         else:
-            return -1
+            return -1, "can't get auth_token"
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
-        return -1
+        return -1, e
 
 
 if __name__ == '__main__':
