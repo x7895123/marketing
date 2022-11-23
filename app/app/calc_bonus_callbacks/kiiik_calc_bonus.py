@@ -74,13 +74,6 @@ async def calc_kiiik_bonus(message, publisher: Rabbit):
                 phone=phone,
                 publisher=publisher
             )
-            await add_and_publish_spin(
-                company=company,
-                bill_id=bill_id,
-                phone=phone,
-                cashdesk=cashdesk,
-                publisher=publisher
-            )
 
         await message.ack()
     except Exception as e:
