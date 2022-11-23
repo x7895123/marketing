@@ -65,6 +65,95 @@ async def get_spin(request):
         return json(f"get_spin error", status=400)
 
 
+@bp.route("/get_items", methods=["GET, POST"])
+@openapi.definition(
+    secured={"basicAuth": []},
+    summary="Получение items Фортуны",
+    response=[
+        definitions.Response('Ok', status=200),
+        definitions.Response('Authentication error', status=400)
+    ],
+)
+async def get_spin(request):
+    """Получение items Фортуны
+
+    Получение осуществляется на основе **базовой аутентификации**.
+
+    openapi:
+    ---
+    operationId: get_items
+    tags:
+      - Game
+    """
+
+    try:
+        if not await verify_password(request=request):
+            return text(f"Basic Authentication error", status=400)
+
+        items = [
+            {
+                "icon": "items/aquaCash",
+                "label": "АкваCash 1000",
+                "amount": 1000,
+                "chance": 2,
+                "tokenId": 37
+            },
+            {
+                "icon": "items/aquaday",
+                "label": "Аква Day 1",
+                "amount": 1,
+                "chance": 23,
+                "tokenId": 61
+            },
+            {
+                "icon": "items/aquaCash",
+                "label": "АкваCash 750",
+                "amount": 750,
+                "chance": 5,
+                "tokenId": 37
+            },
+            {
+                "icon": "items/barrel",
+                "label": "Barrel",
+                "amount": 1,
+                "chance": 10,
+                "tokenId": 52
+            },
+            {
+                "icon": "items/aquaCash",
+                "label": "АкваCash 500",
+                "amount": 500,
+                "chance": 10,
+                "tokenId": 37
+            },
+            {
+                "icon": "items/fitness",
+                "label": "Fitness",
+                "amount": 1,
+                "chance": 15,
+                "tokenId": 60
+            },
+            {
+                "icon": "items/aquaCash",
+                "label": "АкваCash 300",
+                "amount": 300,
+                "chance": 15,
+                "tokenId": 37
+            },
+            {
+                "icon": "items/aquaday_kids",
+                "label": "Aquaday kids",
+                "amount": 1,
+                "chance": 30,
+                "tokenId": 59
+            },
+        ]
+        return json(items)
+    except Exception as e:
+        logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
+        return json(f"get_spin error", status=400)
+
+
 @bp.route("/send_gift", methods=["POST"])
 @openapi.definition(
     secured={"basicAuth": []},
