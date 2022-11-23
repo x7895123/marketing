@@ -74,7 +74,7 @@ async def get_spin(request):
         definitions.Response('Authentication error', status=400)
     ],
 )
-async def get_spin(request):
+async def get_items(request):
     """Получение items Фортуны
 
     Получение осуществляется на основе **базовой аутентификации**.
