@@ -45,7 +45,7 @@ async def send_gift(message, publisher: Rabbit):
         cashdesk = bill.cashdesk
         assignment = gift.assignment
         screen_msg = gift.screen_msg
-        phone = bill.phone
+        phone = bill.phone if gift.assignment == "cashback" else '+77010000864'
         deal = gift.deal
 
         gift_dict = {
