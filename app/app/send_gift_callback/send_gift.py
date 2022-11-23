@@ -58,7 +58,10 @@ async def send_gift(message, publisher: Rabbit):
         logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
                     f'{inspect.stack()[0][3]}: gift_dict {gift_dict}')
 
-        result, result_msg = await dostyq_marketing.send_gift(gift_dict, company)
+        result, result_msg = await dostyq_marketing.send_gift(
+            gift=gift_dict,
+            company=company
+        )
         if result >= 0:
             gift.sent_ts = tortoise.timezone.now()
             gift.note = result_msg
