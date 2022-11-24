@@ -65,7 +65,7 @@ app.static('/static', './static', name='static')
 app.static('/img', './static/img', name='img')
 app.static('/css', './static/css', name='css')
 
-app.static('/Build', './static/build', name='build')
+app.static('/Build', './static/Build', name='Build')
 app.static('/TemplateData', './static/TemplateData', name='TemplateData')
 
 
