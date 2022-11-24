@@ -103,7 +103,7 @@ async def get_items(request):
                 "label": "Аква Day 1",
                 "amount": 1,
                 "chance": 23,
-                "tokenId": 61
+                "tokenId": 63
             },
             {
                 "icon": "items/aquaCash",
@@ -117,7 +117,7 @@ async def get_items(request):
                 "label": "Barrel",
                 "amount": 1,
                 "chance": 10,
-                "tokenId": 52
+                "tokenId": 65
             },
             {
                 "icon": "items/aquaCash",
@@ -145,7 +145,7 @@ async def get_items(request):
                 "label": "Aquaday kids",
                 "amount": 1,
                 "chance": 30,
-                "tokenId": 59
+                "tokenId": 64
             },
         ]
         return json(items)
