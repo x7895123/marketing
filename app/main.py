@@ -65,6 +65,15 @@ app.static('/static', './static', name='static')
 app.static('/img', './static/img', name='img')
 app.static('/css', './static/css', name='css')
 
+app.static('/Build', './static/build', name='build')
+app.static('/TemplateData', './static/TemplateData', name='TemplateData')
+
+
+# app.static('/templates', './templates', name='templates')
+# app.static('/build', './templates/build', name='build')
+# app.static('/templatedata', './templates/templatedata', name='templatedata')
+
+
 # Rabbit Consumer Thread
 
 # # charge consumer
