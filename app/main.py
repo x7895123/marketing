@@ -67,6 +67,7 @@ app.static('/css', './static/css', name='css')
 
 app.static('/Build', './static/Build', name='Build')
 app.static('/TemplateData', './static/TemplateData', name='TemplateData')
+app.static('/StreamingAssets', './static/StreamingAssets', name='StreamingAssets')
 
 
 # app.static('/templates', './templates', name='templates')
