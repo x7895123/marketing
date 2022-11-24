@@ -33,7 +33,7 @@ def routes(app):
     # async def handler(request):
     #     return {"seq": ["one", "two"]}
 
-    @app.route("/")
+    @app.route("/x3")
     @openapi.definition(
         exclude=True
     )
