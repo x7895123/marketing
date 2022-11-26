@@ -38,7 +38,7 @@ async def get_spin(request):
         if not await verify_password(request=request):
             return text(f"Basic Authentication error", status=400)
 
-        logger.info(f"Getting: {request.content}")
+        logger.info(f"Getting: {request.body}")
         cashdesk = request.json.get('cashdesk')
         spin_queue_name = f'{request.ctx.company}_{cashdesk}_spin'
         while message := await request.app.ctx.publisher.get(
