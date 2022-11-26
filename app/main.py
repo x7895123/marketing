@@ -19,13 +19,18 @@ from app.middlewares.middlewares import setup_middlewares
 
 from app.shared import settings
 from app.shared.tools import *
+from sanic_ext import Config
 
 app = Sanic('Marketing')
 app.config.LOGGING = True
-app.config.cors_supports_credentials = True
-app.config.cors_methods = "GET, POST, OPTIONS"
-app.config.cors_origins = '*'
-app.config.cors_allow_headers = "Accept, X-Access-Token, X-Application-Name, X-Request-Sent-Time"
+
+app.extend(config=Config(
+    cors_supports_credentials=True,
+    cors_methods="GET, POST, OPTIONS",
+    cors_origins='*',
+    cors_allow_headers = "Accept, X-Access-Token, X-Application-Name, X-Request-Sent-Time"
+)
+)
 
 logger.setLevel('DEBUG')
 app.config.API_VERSION = '1.0.0'
