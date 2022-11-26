@@ -25,6 +25,7 @@ app.config.LOGGING = True
 app.config.cors_supports_credentials = True
 app.config.cors_methods = "GET, POST, OPTIONS"
 app.config.cors_origins = '*'
+app.config.cors_allow_headers = "Accept, X-Access-Token, X-Application-Name, X-Request-Sent-Time"
 
 logger.setLevel('DEBUG')
 app.config.API_VERSION = '1.0.0'
