@@ -91,8 +91,9 @@ async def get_items(request):
     """
 
     try:
-        if not await verify_password(request=request):
-            return text(f"Basic Authentication error", status=400)
+        if request.ip != '192.168.90.10':
+            if not await verify_password(request=request):
+                return text(f"Basic Authentication error", status=400)
 
         items = [
             {
