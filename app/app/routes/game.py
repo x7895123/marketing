@@ -181,8 +181,11 @@ async def send_gift(request):
         if not await verify_password(request=request):
             return text(f"Basic Authentication error", status=400)
 
-        logger.info(f"Sending gift request.json: {request.json}")
-        gift_dict = request.json
+        logger.info(f"Sending gift request.json: {request.body}")
+        body = unquote(request.body)
+        body = rapidjson.loads(body)
+
+        gift_dict = body
         gift_id = gift_dict.get('gift_id')
         ids1 = gift_dict.get('ids1')
         amounts1 = gift_dict.get('amounts1')
