@@ -25,11 +25,12 @@ app = Sanic('Marketing')
 app.config.LOGGING = True
 
 app.extend(config=Config(
-    cors_supports_credentials=True,
+    # cors_supports_credentials=True,
     cors_methods="GET, POST, OPTIONS",
     # cors_methods="*",
-    # cors_origins='*',
-    cors_allow_headers="Accept, X-Access-Token, X-Application-Name, X-Request-Sent-Time"
+    cors_origins='*',
+    # cors_allow_headers="Accept, X-Access-Token, X-Application-Name, X-Request-Sent-Time"
+    cors_allow_headers="*"
 )
 )
 
