@@ -13,7 +13,7 @@ from ..routes.login import verify_password
 bp = Blueprint("game")
 
 
-@bp.route("/get_spin", methods=["POST"])
+@bp.route("/get_spin", methods=["POST, OPTIONS"])
 @openapi.definition(
     secured={"basicAuth": []},
     summary="Получение текущего задания для Фортуны",
@@ -35,8 +35,9 @@ async def get_spin(request):
     """
 
     try:
-        if not await verify_password(request=request):
-            return text(f"Basic Authentication error", status=400)
+        if request.ip != '192.168.90.10':
+            if not await verify_password(request=request):
+                return text(f"Basic Authentication error", status=400)
 
         logger.info(f"Getting: {request.body}")
 
@@ -159,7 +160,7 @@ async def get_items(request):
         return json(f"get_spin error", status=400)
 
 
-@bp.route("/send_gift", methods=["POST"])
+@bp.route("/send_gift", methods=["POST", "OPTIONS"])
 @openapi.definition(
     secured={"basicAuth": []},
     summary="Send a gift",
@@ -179,8 +180,9 @@ async def send_gift(request):
     """
 
     try:
-        if not await verify_password(request=request):
-            return text(f"Basic Authentication error", status=400)
+        if request.ip != '192.168.90.10':
+            if not await verify_password(request=request):
+                return text(f"Basic Authentication error", status=400)
 
         logger.info(f"Sending gift request.json: {request.body}")
         body = unquote(request.body)
