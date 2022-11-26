@@ -11,7 +11,7 @@ def setup_middlewares(app):
 
     @app.middleware("request")
     async def save_log(request):
-        print(f"save log request.ip: {request.ip}")
+        logger.info(f"save log request.ip: {request.ip}")
 
     @app.middleware("request")
     async def extract_company(request):
