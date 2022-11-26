@@ -23,7 +23,7 @@ from app.shared.tools import *
 app = Sanic('Marketing')
 app.config.LOGGING = True
 app.config.cors_supports_credentials = True
-app.config.cors_methods = '*'
+app.config.cors_methods = "GET, POST, OPTIONS"
 app.config.cors_origins = '*'
 
 logger.setLevel('DEBUG')
