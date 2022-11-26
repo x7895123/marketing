@@ -36,16 +36,16 @@ async def get_spin(request):
 
     try:
         # if request.ip != '192.168.90.10':
-        #     if not await verify_password(request=request):
-        #         return text(f"Basic Authentication error", status=400)
+        if not await verify_password(request=request):
+            return text(f"Basic Authentication error", status=400)
 
         logger.info(f"Getting: {request.body}")
 
         body = unquote(request.body)
         body = rapidjson.loads(body)
         cashdesk = body.get('cashdesk')
-        # spin_queue_name = f'{request.ctx.company}_{cashdesk}_spin'
-        spin_queue_name = f'aqua_{cashdesk}_spin'
+        spin_queue_name = f'{request.ctx.company}_{cashdesk}_spin'
+        # spin_queue_name = f'aqua_{cashdesk}_spin'
         while message := await request.app.ctx.publisher.get(
                 spin_queue_name
         ):
@@ -94,8 +94,8 @@ async def get_items(request):
 
     try:
         # if request.ip != '192.168.90.10':
-        #     if not await verify_password(request=request):
-        #         return text(f"Basic Authentication error", status=400)
+        if not await verify_password(request=request):
+            return text(f"Basic Authentication error", status=400)
 
         items = [
             {
@@ -129,7 +129,7 @@ async def get_items(request):
             {
                 "icon": "items/aquaCash",
                 "label": "АкваCash 500",
-                "amount": 500,
+                "amount": 501,
                 "chance": 10,
                 "tokenId": 37
             },
@@ -143,7 +143,7 @@ async def get_items(request):
             {
                 "icon": "items/aquaCash",
                 "label": "АкваCash 300",
-                "amount": 300,
+                "amount": 301,
                 "chance": 15,
                 "tokenId": 37
             },
@@ -183,8 +183,8 @@ async def send_gift(request):
 
     try:
         # if request.ip != '192.168.90.10':
-        #     if not await verify_password(request=request):
-        #         return text(f"Basic Authentication error", status=400)
+        if not await verify_password(request=request):
+            return text(f"Basic Authentication error", status=400)
 
         logger.info(f"Sending gift request.json: {request.body}")
         body = unquote(request.body)
