@@ -1,5 +1,5 @@
 import inspect
-
+from urllib.parse import unquote
 import rapidjson
 from sanic_ext import openapi
 from sanic_ext.extensions.openapi import definitions
@@ -39,8 +39,10 @@ async def get_spin(request):
             return text(f"Basic Authentication error", status=400)
 
         logger.info(f"Getting: {request.body}")
-        cashdesk = request.form.get("cashdesk")
-        # cashdesk = request.json.get('cashdesk')
+
+        body = unquote(request.body)
+        body = rapidjson.loads(body)
+        cashdesk = body.get('cashdesk')
         spin_queue_name = f'{request.ctx.company}_{cashdesk}_spin'
         while message := await request.app.ctx.publisher.get(
                 spin_queue_name
