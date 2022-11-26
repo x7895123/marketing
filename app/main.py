@@ -3,6 +3,7 @@ import functools
 from sanic import Sanic
 
 import tortoise.contrib.sanic
+from sanic_ext import Extend
 
 from app.calc_bonus_callbacks.kiiik_calc_bonus import calc_kiiik_bonus
 from app.calc_bonus_callbacks.aqua_calc_bonus import calc_aqua_bonus
@@ -20,10 +21,14 @@ from app.middlewares.middlewares import setup_middlewares
 from app.shared import settings
 from app.shared.tools import *
 from sanic_cors import CORS, cross_origin
+from sanic_cors.extension import CORS
 
 app = Sanic('Marketing')
 app.config.LOGGING = True
-CORS(app)
+CORS_OPTIONS = {"resources": r'/*', "origins": "*", "methods": ["GET", "POST", "HEAD", "OPTIONS"]}
+Extend(app, extensions=[CORS], config={"CORS": False, "CORS_OPTIONS": CORS_OPTIONS})
+
+# CORS(app)
 # app.extend(config=Config(
 #     # cors_supports_credentials=True,
 #     # cors_methods="GET, POST, OPTIONS",

@@ -35,16 +35,17 @@ async def get_spin(request):
     """
 
     try:
-        if request.ip != '192.168.90.10':
-            if not await verify_password(request=request):
-                return text(f"Basic Authentication error", status=400)
+        # if request.ip != '192.168.90.10':
+        #     if not await verify_password(request=request):
+        #         return text(f"Basic Authentication error", status=400)
 
         logger.info(f"Getting: {request.body}")
 
         body = unquote(request.body)
         body = rapidjson.loads(body)
         cashdesk = body.get('cashdesk')
-        spin_queue_name = f'{request.ctx.company}_{cashdesk}_spin'
+        # spin_queue_name = f'{request.ctx.company}_{cashdesk}_spin'
+        spin_queue_name = f'aqua_{cashdesk}_spin'
         while message := await request.app.ctx.publisher.get(
                 spin_queue_name
         ):
@@ -92,9 +93,9 @@ async def get_items(request):
     """
 
     try:
-        if request.ip != '192.168.90.10':
-            if not await verify_password(request=request):
-                return text(f"Basic Authentication error", status=400)
+        # if request.ip != '192.168.90.10':
+        #     if not await verify_password(request=request):
+        #         return text(f"Basic Authentication error", status=400)
 
         items = [
             {
@@ -181,9 +182,9 @@ async def send_gift(request):
     """
 
     try:
-        if request.ip != '192.168.90.10':
-            if not await verify_password(request=request):
-                return text(f"Basic Authentication error", status=400)
+        # if request.ip != '192.168.90.10':
+        #     if not await verify_password(request=request):
+        #         return text(f"Basic Authentication error", status=400)
 
         logger.info(f"Sending gift request.json: {request.body}")
         body = unquote(request.body)
