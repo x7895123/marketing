@@ -20,10 +20,11 @@ from app.middlewares.middlewares import setup_middlewares
 from app.shared import settings
 from app.shared.tools import *
 
-
-
 app = Sanic('Marketing')
 app.config.LOGGING = True
+app.config.cors_supports_credentials = True
+app.config.cors_methods = ['GET', 'POST']
+
 logger.setLevel('DEBUG')
 app.config.API_VERSION = '1.0.0'
 app.config.API_TITLE = 'Marketing'
