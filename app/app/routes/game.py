@@ -154,6 +154,7 @@ async def get_items(request):
                 "tokenId": 64
             },
         ]
+        logger.info(f"get_items: {items}")
         return json(items)
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
