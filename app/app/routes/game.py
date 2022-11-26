@@ -182,48 +182,49 @@ async def send_gift(request):
             return text(f"Basic Authentication error", status=400)
 
         logger.info(f"Sending gift request.json: {request.body}")
-        body = unquote(request.body)
-        body = rapidjson.loads(body)
-
-        gift_dict = body
-        gift_id = gift_dict.get('gift_id')
-        ids1 = gift_dict.get('ids1')
-        amounts1 = gift_dict.get('amounts1')
-        msg = gift_dict.get('msg')
-        if not msg:
-            msg = "Құттықтаймыз!👏Поздравляем!"
-        phone = gift_dict.get('phone')
-
-        if not (gift_id and ids1 and amounts1):
-            return text(f"gift_id, ids1, amounts1 are required", status=401)
-
-        gift = await bills.MarketingGift.get(id=gift_id)
-        if gift.published:
-            logger.info(f"gift already published {phone}")
-            return text(f"gift already published {phone}", status=400)
-
-        deal = {
-            'ids1': ids1,
-            'amounts1': amounts1,
-            'msg': msg,
-        }
-        gift.deal = deal
-        gift.screen_msg = msg
-        await gift.save()
-
-        if await request.app.ctx.publisher.publish(
-                body=rapidjson.dumps({'gift_id': gift.id}),
-                queue_name='send_gift'
-        ):
-            gift.published = True
-            await gift.save()
-            logger.info(f"gift spin published {phone}")
-            return text(f"gift spin published {phone}", status=200)
-        else:
-            return text(
-                f"can't publish gift spin to send_gift {phone}",
-                status=400
-            )
+        return text("OK")
+        # body = unquote(request.body)
+        # body = rapidjson.loads(body)
+        #
+        # gift_dict = body
+        # gift_id = gift_dict.get('gift_id')
+        # ids1 = gift_dict.get('ids1')
+        # amounts1 = gift_dict.get('amounts1')
+        # msg = gift_dict.get('msg')
+        # if not msg:
+        #     msg = "Құттықтаймыз!👏Поздравляем!"
+        # phone = gift_dict.get('phone')
+        #
+        # if not (gift_id and ids1 and amounts1):
+        #     return text(f"gift_id, ids1, amounts1 are required", status=401)
+        #
+        # gift = await bills.MarketingGift.get(id=gift_id)
+        # if gift.published:
+        #     logger.info(f"gift already published {phone}")
+        #     return text(f"gift already published {phone}", status=400)
+        #
+        # deal = {
+        #     'ids1': ids1,
+        #     'amounts1': amounts1,
+        #     'msg': msg,
+        # }
+        # gift.deal = deal
+        # gift.screen_msg = msg
+        # await gift.save()
+        #
+        # if await request.app.ctx.publisher.publish(
+        #         body=rapidjson.dumps({'gift_id': gift.id}),
+        #         queue_name='send_gift'
+        # ):
+        #     gift.published = True
+        #     await gift.save()
+        #     logger.info(f"gift spin published {phone}")
+        #     return text(f"gift spin published {phone}", status=200)
+        # else:
+        #     return text(
+        #         f"can't publish gift spin to send_gift {phone}",
+        #         status=400
+        #     )
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
         return text(f"send_gift error", status=400)
