@@ -41,11 +41,7 @@ async def get_spin(request):
 
         logger.info(f"Getting: {request.body}")
 
-        body = unquote(request.body)
-        body = rapidjson.loads(body)
-        cashdesk = body.get('cashdesk')
-        spin_queue_name = f'{request.ctx.company}_{cashdesk}_spin'
-        # spin_queue_name = f'aqua_{cashdesk}_spin'
+        spin_queue_name = f'{request.ctx.company}_spin'
         while message := await request.app.ctx.publisher.get(
                 spin_queue_name
         ):
