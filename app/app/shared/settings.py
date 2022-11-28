@@ -15,6 +15,7 @@ settings = {
         },
         "dostyq_marketing_authorization": {
             "aqua_aqua": "Basic YXF1YWtyZzphcXVhSmtmbWc3cGRvNSE=",
+            "aqua": "Basic YXF1YWtyZzphcXVhSmtmbWc3cGRvNSE=",
             "kiiik": "Basic YXF1YWtyZzphcXVhSmtmbWc3cGRvNSE=",
             "arena": "Basic YXF1YWtyZzphcXVhSmtmbWc3cGRvNSE=",
         },
