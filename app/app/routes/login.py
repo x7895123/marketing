@@ -12,7 +12,7 @@ import jwt
 app_salt = b'$2b$12$iRF76B96HrCFH9HNEpNQpe'
 secret = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWJjIiwiZW1haWwiOiJuYW5jeUBnbWFpbC5j"
 users = {
-    "aqua_aqua": bcrypt.hashpw("NjgzNzExNTZ9.eAaFT-H8P".encode('utf-8'), app_salt),
+    "aqua_aqua": bcrypt.hashpw("1".encode('utf-8'), app_salt),
     "arena": bcrypt.hashpw("zI1NiIsInR5cCI6IkpXVCJ9.eyJ1".encode('utf-8'), app_salt),
     "kiiik": bcrypt.hashpw("LYCbYsgRb-".encode('utf-8'), app_salt),
 }
