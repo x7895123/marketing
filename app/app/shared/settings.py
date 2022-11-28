@@ -14,7 +14,7 @@ settings = {
             "password": "aquajkfmg7pdo5"
         },
         "dostyq_marketing_authorization": {
-            "aqua": "Basic YXF1YWtyZzphcXVhSmtmbWc3cGRvNSE=",
+            "aqua_aqua": "Basic YXF1YWtyZzphcXVhSmtmbWc3cGRvNSE=",
             "kiiik": "Basic YXF1YWtyZzphcXVhSmtmbWc3cGRvNSE=",
             "arena": "Basic YXF1YWtyZzphcXVhSmtmbWc3cGRvNSE=",
         },
