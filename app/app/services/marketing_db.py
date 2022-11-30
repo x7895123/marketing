@@ -143,5 +143,5 @@ if __name__ == '__main__':
     #         )
     #     )
     tortoise.run_async(
-        get_password_hash('arena')
+        get_users()
     )
