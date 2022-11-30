@@ -38,7 +38,7 @@ async def verify_password(request, check_user=None):
         entered_password = request.credentials.password
 
         return False if check_user and check_user != entered_username \
-            else check_user(
+            else await marketing_db.check_user(
                 username=entered_username, password=entered_password
             )
         # byte_password = password.encode('utf-8')
