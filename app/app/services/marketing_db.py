@@ -124,9 +124,10 @@ async def assign_user_code(username, code):
         user = await users.Users.get(name=username)
         user.code = code
         await user.save()
+        return True
     except Exception as e:
         logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
-        return None
+        return False
 
 
 async def get_authorization(code):

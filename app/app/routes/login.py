@@ -172,8 +172,11 @@ async def assign_user_code(request: Request):
             return text(f"Basic Authentication error", status=400)
 
         username = request.json.get('username')
-
-        return json(users.keys())
+        code = request.json.get('code')
+        if await marketing_db.assign_user_code(username=username, code=code):
+            return text("ok", status=200)
+        else:
+            return text("error: assign user code failed", status=400)
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
         return text(f"error: {e}", status=400)
