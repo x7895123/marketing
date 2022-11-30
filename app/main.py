@@ -111,7 +111,7 @@ app.static('/StreamingAssets', './static/StreamingAssets', name='StreamingAssets
 calc_aqua_bonus_callback = functools.partial(
     calc_aqua_bonus, publisher=publisher
 )
-calc_aqua_bonus_queue_name = f'aqua_aqua_calc_bonus'
+calc_aqua_bonus_queue_name = f'aqua_calc_bonus'
 
 # kiiik
 calc_kiiik_bonus_callback = functools.partial(
