@@ -37,10 +37,15 @@ async def verify_password(request, check_user=None):
         entered_username = request.credentials.username
         entered_password = request.credentials.password
 
-        return False if check_user and check_user != entered_username \
-            else await marketing_db.check_user(
+        if check_user and check_user != entered_username:
+            return False
+
+        if await marketing_db.check_user(
                 username=entered_username, password=entered_password
-            )
+        ):
+            return entered_username == check_user if check_user else True
+
+        return False
         # byte_password = password.encode('utf-8')
         # hashed_password = users.get(username)
         # saved_password = await marketing_db.get_password_hash(username)
