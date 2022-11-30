@@ -30,7 +30,7 @@ async def verify_password(request, check_user=None):
         byte_password = password.encode('utf-8')
         # hashed_password = users.get(username)
         hashed_password = await marketing_db.get_password_hash(username)
-        if bcrypt.checkpw(byte_password, hashed_password):
+        if bcrypt.checkpw(byte_password, hashed_password.encode('utf-8')):
             return username == check_user if check_user else True
         else:
             logger.info(f"check_user. password for {username} is invalid")
