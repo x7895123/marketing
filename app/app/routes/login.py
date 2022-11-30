@@ -99,7 +99,7 @@ async def login(request: Request):
         return text(f"login error: {e}", status=400)
 
 
-@bp.route("/puppets")
+@bp.route("/puppets", methods=["GET", "OPTIONS"])
 @openapi.definition(
     secured={"basicAuth": []},
     summary="Получение user list",
@@ -128,7 +128,7 @@ async def puppets(request: Request):
         return text(f"error: {e}", status=400)
 
 
-@bp.route("/assign_user2code")
+@bp.route("/assign_user2code", methods=["POST", "OPTIONS"])
 @openapi.definition(
     secured={"basicAuth": []},
     summary="Получение user list",
