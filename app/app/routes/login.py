@@ -99,7 +99,7 @@ async def login(request: Request):
         return text(f"login error: {e}", status=400)
 
 
-@bp.route("/puppets", methods=["GET", "OPTIONS"])
+@bp.route("/user_list", methods=["GET", "OPTIONS"])
 @openapi.definition(
     secured={"basicAuth": []},
     summary="Получение user list",
@@ -108,7 +108,7 @@ async def login(request: Request):
         definitions.Response('Authentication error', status=400)
     ],
 )
-async def puppets(request: Request):
+async def user_list(request: Request):
     """Получение user list
 
     openapi:
@@ -150,6 +150,8 @@ async def assign_user2code(request: Request):
     try:
         if not await verify_password(request=request, check_user='puppeteer'):
             return text(f"Basic Authentication error", status=400)
+
+        username = request.json.get('username')
 
         return json(users.keys())
     except Exception as e:
