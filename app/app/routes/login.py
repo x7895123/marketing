@@ -122,7 +122,7 @@ async def puppets(request: Request):
         if not await verify_password(request=request, check_user='puppeteer'):
             return text(f"Basic Authentication error", status=400)
 
-        return json(marketing_db.get_users())
+        return json(await marketing_db.get_users())
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
         return text(f"error: {e}", status=400)
