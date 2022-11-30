@@ -5,6 +5,8 @@ from sanic_ext.extensions.openapi import definitions
 from sanic import text, exceptions, json, Request
 from sanic.log import logger
 from sanic import Blueprint
+from urllib.parse import unquote
+import rapidjson
 
 import bcrypt
 import jwt
@@ -205,8 +207,12 @@ async def get_authorization(request: Request):
         if not await verify_password(request=request):
             return text(f"Basic Authentication error", status=400)
 
-        logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {request.json}')
-        code = request.json.get('code')
+        logger.info(f"Sending gift request.json: {request.body}")
+        body = unquote(request.body)
+        body = rapidjson.loads(body)
+
+        logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {body}')
+        code = body.get('code')
         authorization = await marketing_db.get_authorization(code=code)
         if authorization:
             return text(authorization, status=200)
