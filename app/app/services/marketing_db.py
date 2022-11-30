@@ -5,6 +5,9 @@ import os
 import tortoise
 
 from sanic.log import logger
+from base64 import b64encode
+
+from tortoise.expressions import Q
 
 if os.name == 'nt':
     from app.app.models import bills, users
@@ -67,11 +70,11 @@ async def add_gift(bill_id, assignment):
         return None
 
 
-async def add_user(name, password_hash, company, cashdesk):
+async def add_user(name, password, company, cashdesk):
     try:
         user = await users.Users.get_or_create(
             name=name,
-            password_hash=password_hash,
+            password=password,
             company=company,
             cashdesk=cashdesk,
         )
@@ -87,7 +90,7 @@ async def get_users():
         result = await users.Users.all().exclude(
             name__in=['puppeteer', 'guest']
         ).values("name")
-        print([x.get('name') for x in result])
+        logger.info([x.get('name') for x in result])
         return [x.get('name') for x in result]
     except Exception as e:
         logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
@@ -97,8 +100,41 @@ async def get_users():
 async def get_password_hash(username):
     try:
         result = await users.Users.filter(name=username).values("password_hash")
-        print(result[0].get('password_hash').encode('utf-8') if result else b"")
+        logger.info(result[0].get('password_hash').encode('utf-8') if result else b"")
         return result[0].get('password_hash').encode('utf-8') if result else b""
+    except Exception as e:
+        logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
+        return None
+
+
+async def check_user(username, password):
+    try:
+        result = await users.Users.exists(
+            Q(name=username) & Q(password=password)
+        )
+        print(result)
+        return result
+    except Exception as e:
+        logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
+        return None
+
+
+async def assign_user_code(username, code):
+    try:
+        user = await users.Users.get(name=username)
+        user.code = code
+        await user.save()
+    except Exception as e:
+        logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
+        return None
+
+
+async def get_authorization(code):
+    try:
+        user = await users.Users.get(code=code)
+        token = b64encode(f"{user.name}:{user.password}".encode('utf-8')).decode("ascii")
+        print(f"Basic {token}")
+        return f"Basic {token}"
     except Exception as e:
         logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
         return None
@@ -133,15 +169,22 @@ if __name__ == '__main__':
 
     tortoise.run_async(tortoise.Tortoise.init(config=config))
     tortoise.run_async(tortoise.Tortoise.generate_schemas())
-    # for uname, upassword_hash in us.items():
+    # for uname, upassword in us.items():
     #     tortoise.run_async(
     #         add_user(
     #             name=uname,
-    #             password_hash=upassword_hash.decode('utf-8'),
+    #             password=upassword,
     #             company='aqua',
     #             cashdesk='aqua'
     #         )
     #     )
+    # tortoise.run_async(
+    #     assign_user_code(username="aqua", code="123")
+    # )
+    # tortoise.run_async(
+    #     get_authorization(code="123")
+    # )
     tortoise.run_async(
-        get_users()
+        check_user(username="aqua", password='iIsInR5cCI6IkpX')
     )
+

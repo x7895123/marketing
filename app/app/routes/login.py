@@ -13,28 +13,42 @@ from ..services import marketing_db
 
 app_salt = b'$2b$12$iRF76B96HrCFH9HNEpNQpe'
 secret = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWJjIiwiZW1haWwiOiJuYW5jeUBnbWFpbC5j"
+# users = {
+#     "puppeteer": bcrypt.hashpw("rf;lsq j[jnybr ;tkftn pyfnm? ult cblbn afpfy".encode('utf-8'), app_salt),
+#     "guest": bcrypt.hashpw("kj[".encode('utf-8'), app_salt),
+#     "aqua": bcrypt.hashpw("iIsInR5cCI6IkpX".encode('utf-8'), app_salt),
+#     "aqua_aqua": bcrypt.hashpw("1".encode('utf-8'), app_salt),
+#     "arena": bcrypt.hashpw("zI1NiIsInR5cCI6IkpXVCJ9.eyJ1".encode('utf-8'), app_salt),
+#     "kiiik": bcrypt.hashpw("LYCbYsgRb-".encode('utf-8'), app_salt),
+# }
+
 users = {
-    "puppeteer": bcrypt.hashpw("rf;lsq j[jnybr ;tkftn pyfnm? ult cblbn afpfy".encode('utf-8'), app_salt),
-    "guest": bcrypt.hashpw("kj[".encode('utf-8'), app_salt),
-    "aqua": bcrypt.hashpw("iIsInR5cCI6IkpX".encode('utf-8'), app_salt),
-    "aqua_aqua": bcrypt.hashpw("1".encode('utf-8'), app_salt),
-    "arena": bcrypt.hashpw("zI1NiIsInR5cCI6IkpXVCJ9.eyJ1".encode('utf-8'), app_salt),
-    "kiiik": bcrypt.hashpw("LYCbYsgRb-".encode('utf-8'), app_salt),
+    "puppeteer": "rf;lsq j[jnybr ;tkftn pyfnm? ult cblbn afpfy",
+    "guest": "kj[",
+    "aqua": "iIsInR5cCI6IkpX",
+    "aqua_aqua": "1",
+    "arena": "zI1NiIsInR5cCI6IkpXVCJ9.eyJ1",
+    "kiiik": "LYCbYsgRb-",
 }
 
 
 async def verify_password(request, check_user=None):
     try:
-        username = request.credentials.username
-        password = request.credentials.password
-        byte_password = password.encode('utf-8')
+        entered_username = request.credentials.username
+        entered_password = request.credentials.password
+
+        return False if check_user and check_user != entered_username \
+            else check_user(
+                username=entered_username, password=entered_password
+            )
+        # byte_password = password.encode('utf-8')
         # hashed_password = users.get(username)
-        hashed_password = await marketing_db.get_password_hash(username)
-        if bcrypt.checkpw(byte_password, hashed_password):
-            return username == check_user if check_user else True
-        else:
-            logger.info(f"check_user. password for {username} is invalid")
-            return False
+        # saved_password = await marketing_db.get_password_hash(username)
+        # if bcrypt.checkpw(byte_password, hashed_password):
+        #     return username == check_user if check_user else True
+        # else:
+        #     logger.info(f"check_user. password for {username} is invalid")
+        #     return False
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
         return False
@@ -57,6 +71,7 @@ async def verify_token(request):
     except jwt.ExpiredSignatureError as e:
         logger.error(f"verify_token - {e}")
         return False
+
 
 bp = Blueprint("login")
 
@@ -128,7 +143,7 @@ async def user_list(request: Request):
         return text(f"error: {e}", status=400)
 
 
-@bp.route("/assign_user2code", methods=["POST", "OPTIONS"])
+@bp.route("/assign_user_code", methods=["POST", "OPTIONS"])
 @openapi.definition(
     secured={"basicAuth": []},
     summary="Получение user list",
@@ -137,7 +152,7 @@ async def user_list(request: Request):
         definitions.Response('Authentication error', status=400)
     ],
 )
-async def assign_user2code(request: Request):
+async def assign_user_code(request: Request):
     """Получение user list
 
     openapi:

@@ -8,11 +8,11 @@ class Users(Model):
     company = fields.CharField(max_length=200)
     cashdesk = fields.CharField(max_length=200)
     name = fields.CharField(max_length=200, unique=True)
-    password_hash = fields.CharField(max_length=1000)
+    password = fields.CharField(max_length=1000)
     code = fields.CharField(max_length=1000, null=True)
 
     def __str__(self):
         return f"marketing_bill id:{self.id}, create_ts:{self.create_ts}, " \
                f"company:{self.company}, cashdesk:{self.cashdesk}, " \
-               f"name:{self.name}, password_hash:{self.password_hash}, " \
+               f"name:{self.name}, password_hash:{self.password}, " \
                f"code {self.code}"
