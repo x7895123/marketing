@@ -9,6 +9,8 @@ from sanic import Blueprint
 import bcrypt
 import jwt
 
+from ..services import marketing_db
+
 app_salt = b'$2b$12$iRF76B96HrCFH9HNEpNQpe'
 secret = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWJjIiwiZW1haWwiOiJuYW5jeUBnbWFpbC5j"
 users = {
@@ -26,7 +28,8 @@ async def verify_password(request, check_user=None):
         username = request.credentials.username
         password = request.credentials.password
         byte_password = password.encode('utf-8')
-        hashed_password = users.get(username)
+        # hashed_password = users.get(username)
+        hashed_password = await marketing_db.get_password_hash(username)
         if bcrypt.checkpw(byte_password, hashed_password):
             return username == check_user if check_user else True
         else:

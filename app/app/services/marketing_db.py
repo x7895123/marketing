@@ -69,7 +69,7 @@ async def add_gift(bill_id, assignment):
 
 async def add_user(name, password_hash, company, cashdesk):
     try:
-        user = await users.User.get_or_create(
+        user = await users.Users.get_or_create(
             name=name,
             password_hash=password_hash,
             company=company,
@@ -84,7 +84,7 @@ async def add_user(name, password_hash, company, cashdesk):
 
 async def get_users():
     try:
-        result = await users.User.all().exclude(
+        result = await users.Users.all().exclude(
             name__in=['puppeteer', 'guest']
         ).values("name")
         print([x.get('name') for x in result])
@@ -96,9 +96,9 @@ async def get_users():
 
 async def get_password_hash(username):
     try:
-        result = await users.User.filter(name=username).values("password_hash")
-        print(result)
-        return result
+        result = await users.Users.filter(name=username).values("password_hash")
+        print(result[0].get('password_hash') if result else b"")
+        return result[0].get('password_hash') if result else b""
     except Exception as e:
         logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
         return None
@@ -136,5 +136,5 @@ if __name__ == '__main__':
     # for uname, upassword_hash in us.items():
     #     tortoise.run_async(add_user(name=uname, password_hash=upassword_hash, company='aqua', cashdesk='aqua'))
     tortoise.run_async(
-        get_password_hash('arena')
+        get_password_hash('arena1')
     )
