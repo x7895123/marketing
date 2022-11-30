@@ -173,8 +173,12 @@ async def assign_user_code(request: Request):
         if not await verify_password(request=request, check_user='puppeteer'):
             return text(f"Basic Authentication error", status=400)
 
-        username = request.json.get('username')
-        code = request.json.get('code')
+        logger.info(f"assign_user_code request.json: {request.body}")
+        body = unquote(request.body)
+        body = rapidjson.loads(body)
+
+        username = body.get('username')
+        code = body.get('code')
         if await marketing_db.assign_user_code(username=username, code=code):
             return text("ok", status=200)
         else:
