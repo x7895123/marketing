@@ -134,7 +134,7 @@ async def puppets(request: Request):
         definitions.Response('Authentication error', status=400)
     ],
 )
-async def puppets(request: Request):
+async def assign_user2code(request: Request):
     """Получение user list
 
     openapi:
