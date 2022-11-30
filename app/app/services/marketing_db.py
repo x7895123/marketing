@@ -138,7 +138,7 @@ async def get_authorization(code):
         return f"Basic {token}"
     except Exception as e:
         logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
-        return None
+        return ""
 
 
 if __name__ == '__main__':
@@ -186,6 +186,6 @@ if __name__ == '__main__':
     #     get_authorization(code="123")
     # )
     tortoise.run_async(
-        check_user(username="aqua", password='iIsInR5cCI6IkpX')
+        get_authorization(code="123")
     )
 

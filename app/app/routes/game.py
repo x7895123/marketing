@@ -13,7 +13,7 @@ from ..routes.login import verify_password
 bp = Blueprint("game")
 
 
-@bp.route("/get_spin", methods=["POST", "OPTIONS"])
+@bp.route("/get_spin", methods=["GET", "POST", "OPTIONS"])
 @openapi.definition(
     secured={"basicAuth": []},
     summary="Получение текущего задания для Фортуны",

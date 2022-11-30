@@ -182,5 +182,38 @@ async def assign_user_code(request: Request):
         return text(f"error: {e}", status=400)
 
 
+@bp.route("/get_authorization", methods=["POST", "OPTIONS"])
+@openapi.definition(
+    secured={"basicAuth": []},
+    summary="Получение user list",
+    response=[
+        definitions.Response('Ok', status=200),
+        definitions.Response('Authentication error', status=400)
+    ],
+)
+async def get_authorization(request: Request):
+    """Получение user list
+
+    openapi:
+    ---
+    operationId: puppets
+    tags:
+      - Login
+    """
+
+    try:
+        if not await verify_password(request=request, check_user='puppeteer'):
+            return text(f"Basic Authentication error", status=400)
+
+        code = request.json.get('code')
+        authorization = await marketing_db.get_authorization(code=code)
+        if authorization:
+            return text(authorization, status=200)
+        else:
+            return text("error: get authorization failed", status=400)
+    except Exception as e:
+        logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
+        return text(f"error: {e}", status=400)
+
 if __name__ == '__main__':
     pass
