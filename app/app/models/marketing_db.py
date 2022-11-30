@@ -14,7 +14,11 @@ TORTOISE_ORM = {
             },
             'apps': {
                 'models': {
-                    'models': ['app.models.bills', "aerich.models"],
+                    'models': [
+                        # 'app.app.models.bills',
+                        'app.app.models.users',
+                        "aerich.models"
+                    ],
                     # If no default_connection specified, defaults to 'default'
                     'default_connection': 'arena',
                 }
