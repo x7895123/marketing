@@ -202,9 +202,10 @@ async def get_authorization(request: Request):
     """
 
     try:
-        if not await verify_password(request=request, check_user='puppeteer'):
+        if not await verify_password(request=request):
             return text(f"Basic Authentication error", status=400)
 
+        logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {request.json}')
         code = request.json.get('code')
         authorization = await marketing_db.get_authorization(code=code)
         if authorization:
