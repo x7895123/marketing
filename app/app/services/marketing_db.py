@@ -97,8 +97,8 @@ async def get_users():
 async def get_password_hash(username):
     try:
         result = await users.Users.filter(name=username).values("password_hash")
-        print(result[0].get('password_hash') if result else b"")
-        return result[0].get('password_hash') if result else b""
+        print(result[0].get('password_hash').encode('utf-8') if result else b"")
+        return result[0].get('password_hash').encode('utf-8') if result else b""
     except Exception as e:
         logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
         return None
@@ -134,7 +134,14 @@ if __name__ == '__main__':
     tortoise.run_async(tortoise.Tortoise.init(config=config))
     tortoise.run_async(tortoise.Tortoise.generate_schemas())
     # for uname, upassword_hash in us.items():
-    #     tortoise.run_async(add_user(name=uname, password_hash=upassword_hash, company='aqua', cashdesk='aqua'))
+    #     tortoise.run_async(
+    #         add_user(
+    #             name=uname,
+    #             password_hash=upassword_hash.decode('utf-8'),
+    #             company='aqua',
+    #             cashdesk='aqua'
+    #         )
+    #     )
     tortoise.run_async(
-        get_password_hash('arena1')
+        get_password_hash('arena')
     )
