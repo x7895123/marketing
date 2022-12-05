@@ -53,3 +53,11 @@ def routes(app):
     @app.ext.template("terms.html")
     async def terms(request):
         return {}
+
+    @app.get("/slot")
+    @openapi.definition(
+        exclude=True,
+    )
+    @app.ext.template("slot.html")
+    async def terms(request):
+        return {}

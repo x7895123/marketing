@@ -88,6 +88,9 @@ app.static('/Build', './static/Build', name='Build')
 app.static('/TemplateData', './static/TemplateData', name='TemplateData')
 app.static('/StreamingAssets', './static/StreamingAssets', name='StreamingAssets')
 
+app.static('/slot/Build', './static/slot/Build', name='slotBuild')
+app.static('/slot/TemplateData', './static/slot/TemplateData', name='slotTemplateData')
+app.static('/slot/StreamingAssets', './static/slot/StreamingAssets', name='slotStreamingAssets')
 
 # app.static('/templates', './templates', name='templates')
 # app.static('/build', './templates/build', name='build')
