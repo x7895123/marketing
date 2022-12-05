@@ -59,5 +59,5 @@ def routes(app):
         exclude=True,
     )
     @app.ext.template("slot.html")
-    async def terms(request):
+    async def slot(request):
         return {}
