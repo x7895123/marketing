@@ -48,6 +48,11 @@ async def calc_aqua_bonus(message, publisher: Rabbit):
         id_fitness_payment = original_bill.get('id_fitness_payment')
         payment = original_bill.get('payment')
         guest_count = original_bill.get('guest_count') or 0
+
+        logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
+                    f'{inspect.stack()[0][3]}: guest_count {guest_count}')
+
+
         acc_close_date = original_bill.get('acc_close_date')
         deal = bill.deal
         if not deal:
