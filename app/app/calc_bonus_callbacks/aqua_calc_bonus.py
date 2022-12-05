@@ -84,9 +84,10 @@ async def calc_aqua_bonus(message, publisher: Rabbit):
 
         await message.ack()
     except Exception as e:
-        logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
+        logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} {inspect.stack()[0][3]}: {e}')
+
         await publisher.ttl_publish(
-            body=message.body,
+            body=rapidjson.dumps(rapidjson.loads(message.body)),
             queue_name='aqua_calc_bonus',
             minutes=10
         )
