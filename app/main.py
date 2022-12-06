@@ -80,14 +80,20 @@ app.ext.openapi.add_security_scheme(
     scheme="bearer",
 )
 
-app.static('/static', './static', name='static')
-app.static('/img', './static/img', name='img')
-app.static('/css', './static/css', name='css')
+# app.static('/static', './static', name='static')
+# app.static('/img', './static/img', name='img')
+# app.static('/css', './static/css', name='css')
 
+# start page
+app.static('/assets', './templates/start_page/assets', name='assets')
+app.static('/', './templates/start_page', name='start_page')
+
+# spin
 app.static('/Build', './static/Build', name='Build')
 app.static('/TemplateData', './static/TemplateData', name='TemplateData')
 app.static('/StreamingAssets', './static/StreamingAssets', name='StreamingAssets')
 
+# slot
 app.static('/slot/Build', './static/slot/Build', name='slotBuild')
 app.static('/slot/TemplateData', './static/slot/TemplateData', name='slotTemplateData')
 app.static('/slot/StreamingAssets', './static/slot/StreamingAssets', name='slotStreamingAssets')
