@@ -41,6 +41,7 @@ async def iiko_bill(request):
             return text(f"Basic Authentication error", status=400)
 
         logger.info(f"request.ctx.company: {request.ctx.company}")
+        logger.info(f"Sending gift request.json: {request.body}")
         return json({"result": "ok"}, status=200)
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
