@@ -37,8 +37,8 @@ async def iiko_bill(request):
 
     try:
         logger.info(f"start add_bill")
-        if not await verify_password(request=request):
-            return text(f"Basic Authentication error", status=400)
+        # if not await verify_password(request=request):
+        #     return text(f"Basic Authentication error", status=400)
 
         logger.info(f"request.ctx.company: {request.ctx.company}")
         logger.info(f"Sending gift request.json: {request.body}")
