@@ -1,7 +1,7 @@
 import qrcode
 from PIL import Image
 from math import ceil
-from .qr_utils import img_radius, distance, paint_qr, make_frame
+from qr_utils import img_radius, distance, paint_qr, make_frame
 from pathlib import Path
 
 PROJECT_PATH = Path(__file__).parent
@@ -10,8 +10,8 @@ PROJECT_PATH = Path(__file__).parent
 def create_qr(data,
               logo=PROJECT_PATH / 'img/dostyq_back.png',
               gradient_pos=(0.5, 0.5),
-              from_color='#0063eb',
-              to_color='#392195'):
+              from_color='#00aeef',
+              to_color='#0065ef'):
     qr = qrcode.QRCode(version=7, box_size=10, border=4)
     qr.add_data(data)
     qr.make(fit=True)
@@ -139,5 +139,10 @@ def make_image(modules, logo, from_color, to_color, gradient_pos):
               box=(int(qr_size / 2 - im_logo.size[0] / 2), int(qr_size / 2 - im_logo.size[1] / 2)),
               mask=im_logo)
 
-    img = make_frame(img, box_size*5)
+    img = make_frame(img, box_size*2)
     return img
+
+
+if __name__ == '__main__':
+    img = create_qr('123')
+    img.save('q:/temp/bonus/1.png')
