@@ -12,7 +12,7 @@ def create_qr(data,
               gradient_pos=(0.5, 0.5),
               from_color='#00aeef',
               to_color='#0065ef'):
-    qr = qrcode.QRCode(version=7, box_size=10, border=4)
+    qr = qrcode.QRCode(version=5, box_size=10, border=4)
     qr.add_data(data)
     qr.make(fit=True)
     return make_image(qr.modules,
