@@ -10,8 +10,8 @@ PROJECT_PATH = Path(__file__).parent
 def create_qr(data,
               logo=PROJECT_PATH / 'img/dostyq_back.png',
               gradient_pos=(0.5, 0.5),
-              from_color='#000000',
-              to_color='#000000'):
+              from_color='#0063eb',
+              to_color='#392195'):
     qr = qrcode.QRCode(version=7, box_size=10, border=4)
     qr.add_data(data)
     qr.make(fit=True)
