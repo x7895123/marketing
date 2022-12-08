@@ -1,7 +1,7 @@
 import qrcode
 from PIL import Image
 from math import ceil
-from qr_utils import img_radius, distance, paint_qr, make_frame
+from .qr_utils import img_radius, distance, paint_qr, make_frame
 from pathlib import Path
 
 PROJECT_PATH = Path(__file__).parent
