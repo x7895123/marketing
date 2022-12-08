@@ -3,7 +3,7 @@ from urllib.parse import unquote
 import rapidjson
 from sanic_ext import openapi
 from sanic_ext.extensions.openapi import definitions
-from sanic import text, exceptions, json
+from sanic import text, exceptions, json, response
 from sanic.log import logger
 from sanic import Blueprint
 
@@ -48,7 +48,7 @@ async def get_bill_qr(request):
                        from_color='#000000',
                        to_color='#000000')
 
-        return text(qr)
+        return response.raw(qr)
 
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
