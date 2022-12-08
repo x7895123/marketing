@@ -100,6 +100,12 @@ app.static('/slot/Build', './static/slot/Build', name='slotBuild')
 app.static('/slot/TemplateData', './static/slot/TemplateData', name='slotTemplateData')
 app.static('/slot/StreamingAssets', './static/slot/StreamingAssets', name='slotStreamingAssets')
 
+# spinV2
+app.static('/spinV2/Build', './static/spinV2/Build', name='spinV2Build')
+app.static('/spinV2/TemplateData', './static/spinV2/TemplateData', name='spinV2TemplateData')
+app.static('/spinV2/StreamingAssets', './static/spinV2/StreamingAssets', name='spinV2StreamingAssets')
+
+
 # app.static('/templates', './templates', name='templates')
 # app.static('/build', './templates/build', name='build')
 # app.static('/templatedata', './templates/templatedata', name='templatedata')

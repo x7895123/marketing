@@ -75,3 +75,11 @@ def routes(app):
     @app.ext.template("slot.html")
     async def slot(request):
         return {}
+
+    @app.get("/spinV2")
+    @openapi.definition(
+        exclude=True,
+    )
+    @app.ext.template("spinV2.html")
+    async def spinV2(request):
+        return {}
