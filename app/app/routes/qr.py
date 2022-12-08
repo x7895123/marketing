@@ -43,6 +43,7 @@ async def get_bill_qr(request):
 
         logger.info(f"get_bill_qr: {request.ctx.company}")
         company_bill_id = await marketing_db.add_bill_qr(request.ctx.company)
+        logger.info(f"company_bill_id: {company_bill_id}")
         qr = create_qr(company_bill_id,
                        from_color='#000000',
                        to_color='#000000')
