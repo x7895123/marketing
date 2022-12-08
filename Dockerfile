@@ -1,8 +1,8 @@
 #docker exec -it $(docker ps -f name=marketing_app --format "{{.ID}}") /bin/sh
 # docker rmi $(docker images | grep marketing)
 
-#FROM python:3.8.7
-FROM python:3.11.0-alpine3.16
+FROM python:3.11.1
+#FROM python:3.11.0-alpine3.16
 
 LABEL company="VS"
 
@@ -32,7 +32,9 @@ ADD ./requirements.txt /app
 #                       gcc \
 #                       libc-dev
 # RUN apk add --no-cache gcc libc-dev
-RUN apk add  --no-cache libffi-dev build-base
+
+
+#RUN apk add  --no-cache libffi-dev build-base
 
 
 # Install any needed packages specified in requirements.txt
