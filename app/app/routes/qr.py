@@ -6,6 +6,7 @@ from sanic_ext.extensions.openapi import definitions
 from sanic import text, exceptions, json, response
 from sanic.log import logger
 from sanic import Blueprint
+import io
 
 from ..models import bills
 from ..routes.login import verify_password
@@ -48,7 +49,12 @@ async def get_bill_qr(request):
                        from_color='#000000',
                        to_color='#000000')
 
-        return response.raw(qr.getexif())
+        with io.BytesIO() as output:
+            qr.save(output, format="PNG")
+            contents = output.getvalue()
+            return response.raw(contents)
+
+
 
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
