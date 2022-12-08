@@ -64,4 +64,5 @@ def solid(img, color):
 
 
 def make_frame(img, border_width):
-    return ImageOps.expand(img, border=border_width, fill='white')
+    # return ImageOps.expand(img, border=border_width, fill='white')
+    return ImageOps.expand(img, border=border_width)
