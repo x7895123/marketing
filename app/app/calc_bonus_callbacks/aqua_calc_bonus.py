@@ -86,12 +86,12 @@ async def calc_aqua_bonus(message, publisher: Rabbit):
         await message.ack()
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} {inspect.stack()[0][3]}: {e}')
-
-        await publisher.ttl_publish(
-            body=rapidjson.dumps(rapidjson.loads(message.body)),
-            queue_name='aqua_calc_bonus',
-            minutes=10
-        )
+        await message.ack()
+        # await publisher.ttl_publish(
+        #     body=rapidjson.dumps(rapidjson.loads(message.body)),
+        #     queue_name='aqua_calc_bonus',
+        #     minutes=10
+        # )
 
 
 async def add_and_publish_cashback(

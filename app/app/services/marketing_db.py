@@ -1,6 +1,7 @@
 import inspect
 import datetime
 import os
+import uuid
 
 import tortoise
 
@@ -19,6 +20,24 @@ else:
 
 def d():
     print('hi')
+
+
+async def add_bill_qr(company):
+    try:
+
+        company_bill_id = str(uuid.uuid4())
+        company_bill_id = f"{company}-{company_bill_id}"
+
+        marketing_bill = await bills.MarketingBill.get_or_create(
+            company=company,
+            company_bill_id=company_bill_id,
+        )
+        await marketing_bill[0].save()
+        logger.info(f"bill saved: {marketing_bill[0]}")
+        return company_bill_id
+    except Exception as e:
+        logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
+        return None
 
 
 async def add_bill(bill: dict, company):

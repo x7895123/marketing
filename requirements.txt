@@ -2,7 +2,7 @@ aio-pika
 asyncpg
 bcrypt~=4.0.1
 colorama
-httpx~=0.23.0
+httpx==0.23.1
 jinja2
 pip-chill
 python-rapidjson
@@ -11,9 +11,13 @@ sanic-ext
 sanic-httpauth
 secure~=0.3.0
 tortoise-orm
-inflect
-phonenumbers~=8.13.0
+inflect~=6.0.2
+phonenumbers==8.13.2
 python-dateutil~=2.8.2
 PyJWT~=2.6.0
 aerich
 sanic_cors
+qrcode~=7.3.1
+Pillow~=9.3.0
+numpy~=1.23.5
+colormap~=1.0.4
