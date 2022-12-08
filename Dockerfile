@@ -6,9 +6,9 @@ FROM python:3.11.1
 
 LABEL company="VS"
 
-RUN apk add --no-cache \
-        tzdata\
-    && echo "Asia/Almaty" > /etc/timezone
+#RUN apk add --no-cache \
+#        tzdata\
+#    && echo "Asia/Almaty" > /etc/timezone
 
 ENV LANG=C.UTF-8 \
     TZ=Asia/Almaty
