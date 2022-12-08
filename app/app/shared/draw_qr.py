@@ -8,7 +8,7 @@ PROJECT_PATH = Path(__file__).parent
 
 
 def create_qr(data,
-              logo=PROJECT_PATH / 'img/dostyq_logo.png',
+              logo=PROJECT_PATH / 'img/dostyq_back.png',
               gradient_pos=(0.5, 0.5),
               from_color='#000000',
               to_color='#000000'):
