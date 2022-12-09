@@ -39,13 +39,19 @@ async def get_bill_qr(request):
 
     try:
         # if request.ip != '192.168.90.10':
-        # if not await verify_password(request=request):
-        #     return text(f"Basic Authentication error", status=400)
+        if not await verify_password(request=request):
+            return text(f"Basic Authentication error", status=400)
 
         logger.info(f"get_bill_qr: {request.ctx.company}")
         company_bill_id = await marketing_db.add_bill_qr(request.ctx.company)
         logger.info(f"company_bill_id: {company_bill_id}")
-        qr = create_qr(company_bill_id)
+
+        data = {
+            "id": company_bill_id,
+            "queue": "aqua"
+        }
+        data = rapidjson.dumps(data)
+        qr = create_qr(data)
 
         with io.BytesIO() as output:
             qr.save(output, format="PNG")
