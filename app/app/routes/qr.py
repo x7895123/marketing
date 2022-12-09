@@ -47,8 +47,9 @@ async def get_bill_qr(request):
         logger.info(f"company_bill_id: {company_bill_id}")
 
         data = {
+            "action": "aquaV1",
+            "queue": "aqua",
             "id": company_bill_id,
-            "queue": "aqua"
         }
         data = rapidjson.dumps(data)
         qr = create_qr(data)

@@ -26,8 +26,6 @@ async def add_bill_qr(company):
     try:
 
         company_bill_id = str(uuid.uuid4())
-        company_bill_id = f"{company}-{company_bill_id}"
-
         marketing_bill = await bills.MarketingBill.get_or_create(
             company=company,
             company_bill_id=company_bill_id,
