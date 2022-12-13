@@ -18,7 +18,7 @@ if os.name == 'nt':
     from app.app.shared import tools, settings
 else:
     from ..models import bills, qr_auth
-    from ..shared import tools
+    from ..shared import tools, settings
 
 
 async def process_qr_auth(message, publisher: Rabbit):
