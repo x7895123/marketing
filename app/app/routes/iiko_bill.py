@@ -32,9 +32,9 @@ async def iiko_bill(request):
 
     openapi:
     ---
-    operationId: get_spin
+    operationId: iiko_bill
     tags:
-      - Game
+      - Integration
     """
 
     try:
