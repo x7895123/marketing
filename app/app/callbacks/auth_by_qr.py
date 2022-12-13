@@ -31,8 +31,10 @@ async def process_qr_auth(message, publisher: Rabbit):
 
         request_id = body_dict.get('uuid')
         phone = body_dict.get('phone')
+        phone = tools.correct_phone(phone)
+        logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
+                    f'{inspect.stack()[0][3]}: data {request_id} {phone}')
         if phone:
-            phone = tools.correct_phone(phone)
             try:
                 rec = await qr_auth.QrAuth.get(request_id=request_id)
                 logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
@@ -69,13 +71,18 @@ async def process_qr_auth(message, publisher: Rabbit):
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
     finally:
         if message.reply_to is not None and message.correlation_id is not None:
-            logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]} '
+            logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]} '
                          f'reply_to: {message.reply_to} - {message.correlation_id}')
+
+            logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]} '
+                        f'result: {result}')
+
             response = rapidjson.dumps(result).encode()
 
             connection = await publisher.connect()
             channel = await connection.channel()
             exchange = channel.default_exchange
+
             await exchange.publish(
                 Message(
                     body=response,
@@ -83,6 +90,9 @@ async def process_qr_auth(message, publisher: Rabbit):
                 ),
                 routing_key=message.reply_to,
             )
+            logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]} '
+                        f'sent result: {result}')
+
         await message.ack()
 
 
