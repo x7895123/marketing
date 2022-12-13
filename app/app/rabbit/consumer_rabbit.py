@@ -86,11 +86,11 @@ def consume_v2(app, callbacks, max_retries):
                     connection = await connect(**rabbit_params)
                     channel = await connection.channel()
                     # Maximum message count which will be processing at the same time.
-                    await channel.set_qos(prefetch_count=100)
+                    await channel.set_qos(prefetch_count=1)
                     # Declaring queue
                     queue = await channel.declare_queue(queue_name, durable=True)
                     await queue.consume(callback)
-                    logger.info(f"start consume {queue_name} ...")
+                    logger.info(f"start consume {key}-{queue_name} ...")
                 await asyncio.Future()
             except aio_pika.AMQPException as why:
                 logger.error(why)
