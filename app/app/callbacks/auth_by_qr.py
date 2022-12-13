@@ -73,8 +73,7 @@ async def process_qr_auth(message, publisher: Rabbit):
                          f'reply_to: {message.reply_to} - {message.correlation_id}')
             response = rapidjson.dumps(result).encode()
 
-            await publisher.connect()
-            connection = publisher.connection
+            connection = await publisher.connect()
             channel = await connection.channel()
             exchange = channel.default_exchange
             await exchange.publish(
@@ -85,7 +84,6 @@ async def process_qr_auth(message, publisher: Rabbit):
                 routing_key=message.reply_to,
             )
         await message.ack()
-
 
 
 async def add_and_publish_spin(company, bill_id, phone, cashdesk, publisher):
