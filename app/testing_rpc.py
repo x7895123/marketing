@@ -57,7 +57,7 @@ class FibonacciRpcClient:
                 correlation_id=correlation_id,
                 reply_to=self.callback_queue.name,
             ),
-            routing_key="aqua",
+            routing_key="aqua_test",
         )
 
         return int(await future)

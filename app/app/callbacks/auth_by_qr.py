@@ -25,7 +25,6 @@ async def process_qr_auth(message, publisher: Rabbit):
     try:
         logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
                     f'{inspect.stack()[0][3]}: start {message.body}')
-        result = {"status": 0, "message": "ok"}
 
         body_dict = rapidjson.loads(message.body)
 
