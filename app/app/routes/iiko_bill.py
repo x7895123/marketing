@@ -18,7 +18,7 @@ bp = Blueprint("iiko_bill")
 @bp.route("/iiko_bill", methods=["POST"])
 @openapi.definition(
     secured={"basicAuth": []},
-    summary="Добавление счета c iiko",
+    summary="Добавление счета iiko",
     body=definitions.RequestBody(Bill, required=True),
     response=[
         definitions.Response('Ok', status=200),
