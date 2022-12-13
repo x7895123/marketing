@@ -58,9 +58,13 @@ async def process_qr_auth(message, publisher: Rabbit):
                                 publisher=publisher
                             ):
                                 result = {"status": 1, "message": "already_scanned"}
-                    await rec.save()
+                        await rec.save()
+                    else:
+                        result = {"status": 1, "message": "already_scanned"}
                 else:
-                    result = {"status": 1, "message": "already_scanned"}
+                    logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
+                                f'{inspect.stack()[0][3]}: request_id {request_id} not found')
+
             except Exception as e:
                 logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
                 result = {"status": 2, "message": "unrecognized"}
