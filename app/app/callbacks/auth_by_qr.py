@@ -36,7 +36,7 @@ async def process_qr_auth(message, publisher: Rabbit):
             return
         phone = tools.correct_phone(phone)
 
-        result = {"result": "ok", "message": ""}
+        result = {"status": 0, "message": "ok"}
         try:
             rec = await qr_auth.QrAuth.get(request_id=request_id)
             logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
@@ -58,13 +58,13 @@ async def process_qr_auth(message, publisher: Rabbit):
                         cashdesk=rec.username,
                         publisher=publisher
                     ):
-                        result = {"result": "error", "message": "already_scanned"}
+                        result = {"status": 1, "message": "already_scanned"}
             else:
-                result = {"result": "error", "message": "already_scanned"}
+                result = {"status": 1, "message": "already_scanned"}
             await rec.save()
         except Exception as e:
             logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
-            result = {"result": "error", "message": "unrecognized"}
+            result = {"status": 2, "message": "unrecognized"}
 
         if message.reply_to is not None and message.correlation_id is not None:
             response = rapidjson.dumps(result).encode()
