@@ -172,11 +172,11 @@ callbacks = {
         "callback": send_gift_callback,
         "rabbit_params": arena_rabbit
     },
-    "process_qr_auth": {
-        "queuename": process_qr_auth_queue_name,
-        "callback": process_qr_auth_callback,
-        "rabbit_params": dostyq_rabbit
-    },
+    # "process_qr_auth": {
+    #     "queuename": process_qr_auth_queue_name,
+    #     "callback": process_qr_auth_callback,
+    #     "rabbit_params": dostyq_rabbit
+    # },
 
 }
 
