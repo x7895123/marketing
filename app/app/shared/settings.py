@@ -11,7 +11,7 @@ settings = {
             "host": "192.168.90.78",
             "port": 5672,
             "user": "bunny",
-            "password": "p#lkr&re!NNmer!"
+            "password": "p#lkr&re!NNmer"
         },
         "aqua_rabbit": {
             "host": "192.168.90.221",
