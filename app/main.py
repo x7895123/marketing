@@ -5,8 +5,8 @@ from sanic import Sanic
 import tortoise.contrib.sanic
 from sanic_ext import Extend
 
-from app.calc_bonus_callbacks.kiiik_calc_bonus import calc_kiiik_bonus
-from app.calc_bonus_callbacks.aqua_calc_bonus import calc_aqua_bonus
+from app.callbacks.kiiik_calc_bonus import calc_kiiik_bonus
+from app.callbacks.aqua_calc_bonus import calc_aqua_bonus
 
 from app.send_gift_callback.send_gift import send_gift
 from app.rabbit.consumer_rabbit import consume
@@ -134,7 +134,7 @@ calc_aqua_bonus_queue_name = f'aqua_calc_bonus'
 
 # kiiik
 calc_kiiik_bonus_callback = functools.partial(
-calc_kiiik_bonus, publisher=publisher
+    calc_kiiik_bonus, publisher=publisher
 )
 calc_kiiik_bonus_queue_name = "kiiik_calc_bonus"
 
@@ -146,7 +146,7 @@ send_gift_queue_name = f'send_gift'
 
 callbacks = {
     calc_aqua_bonus_queue_name: calc_aqua_bonus_callback,
-    calc_kiiik_bonus_queue_name: calc_aqua_bonus_callback,
+    calc_kiiik_bonus_queue_name: calc_kiiik_bonus_callback,
     send_gift_queue_name: send_gift_callback,
 }
 
@@ -156,6 +156,13 @@ consume(
     max_retries=None,
     **rabbit_params
 )
+
+# spin
+calc_aqua_bonus_callback = functools.partial(
+    calc_aqua_bonus, publisher=publisher
+)
+calc_aqua_bonus_queue_name = f'aqua_calc_bonus'
+
 
 
 if __name__ == "__main__":

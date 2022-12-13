@@ -7,6 +7,12 @@ settings = {
             "user": "admin",
             "password": "rabbitjkfmg7pdo5"
         },
+        "dostyq_rabbit": {
+            "host": "192.168.90.78",
+            "port": 5672,
+            "user": "aqua",
+            "password": "aquaJkfmg7pdo5!"
+        },
         "aqua_rabbit": {
             "host": "192.168.90.221",
             "port": 5673,

@@ -16,7 +16,7 @@ from ..shared.draw_qr import create_qr
 bp = Blueprint("qr")
 
 
-@bp.route("/get_bill_qr", methods=["GET", "POST", "OPTIONS"])
+@bp.route("/get_spin_qr", methods=["GET", "POST", "OPTIONS"])
 @openapi.definition(
     secured={"basicAuth": []},
     summary="Получение текущего задания для Фортуны",
@@ -25,7 +25,7 @@ bp = Blueprint("qr")
         definitions.Response('Authentication error', status=400)
     ],
 )
-async def get_bill_qr(request):
+async def get_spin_qr(request):
     """Получение текущего задания для Фортуны
 
     Получение задания осуществляется на основе **базовой аутентификации**.
@@ -43,13 +43,13 @@ async def get_bill_qr(request):
             return text(f"Basic Authentication error", status=400)
 
         logger.info(f"get_bill_qr: {request.ctx.company}")
-        company_bill_id = await marketing_db.add_bill_qr(request.ctx.company)
-        logger.info(f"company_bill_id: {company_bill_id}")
+        request_id = await marketing_db.add_qr_auth(request.ctx.company, 'spin')
+        logger.info(f"request_id: {request_id}")
 
         data = {
             "action": "aquaV1",
             "queue": "aqua",
-            "id": company_bill_id,
+            "id": request_id,
         }
         data = rapidjson.dumps(data)
         qr = create_qr(data)
@@ -58,8 +58,6 @@ async def get_bill_qr(request):
             qr.save(output, format="PNG")
             contents = output.getvalue()
             return response.raw(contents)
-
-
 
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')

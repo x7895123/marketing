@@ -1,6 +1,7 @@
 import inspect
 import datetime
 import os
+
 import uuid
 
 import tortoise
@@ -11,10 +12,10 @@ from base64 import b64encode
 from tortoise.expressions import Q
 
 if os.name == 'nt':
-    from app.app.models import bills, users
+    from app.app.models import bills, users, qr_auth
     from app.app.shared import tools, settings
 else:
-    from ..models import bills, users
+    from ..models import bills, users, qr_auth
     from ..shared import tools
 
 
@@ -22,17 +23,17 @@ def d():
     print('hi')
 
 
-async def add_bill_qr(company):
+async def add_qr_auth(company, assignment):
     try:
-
-        company_bill_id = str(uuid.uuid4())
-        marketing_bill = await bills.MarketingBill.get_or_create(
+        request_id = str(uuid.uuid4())
+        rec = await qr_auth.QrAuth.get_or_create(
             company=company,
-            company_bill_id=company_bill_id,
+            request_id=request_id,
+            assignment=assignment
         )
-        await marketing_bill[0].save()
-        logger.info(f"bill saved: {marketing_bill[0]}")
-        return company_bill_id
+        await rec[0].save()
+        logger.info(f"qr_auth saved: {rec[0]}")
+        return request_id
     except Exception as e:
         logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
         return None
@@ -187,22 +188,22 @@ if __name__ == '__main__':
 
     tortoise.run_async(tortoise.Tortoise.init(config=config))
     tortoise.run_async(tortoise.Tortoise.generate_schemas())
-    # for uname, upassword in us.items():
-    #     tortoise.run_async(
-    #         add_user(
-    #             name=uname,
-    #             password=upassword,
-    #             company='aqua',
-    #             cashdesk='aqua'
-    #         )
-    #     )
+    for uname, upassword in us.items():
+        tortoise.run_async(
+            add_user(
+                name=uname,
+                password=upassword,
+                company='aqua',
+                cashdesk='aqua'
+            )
+        )
     # tortoise.run_async(
     #     assign_user_code(username="aqua", code="123")
     # )
     # tortoise.run_async(
     #     get_authorization(code="123")
     # )
-    tortoise.run_async(
-        get_authorization(code="321")
-    )
+    # tortoise.run_async(
+    #     get_authorization(code="321")
+    # )
 

@@ -30,9 +30,9 @@ async def add_bill(request):
 
     openapi:
     ---
-    operationId: get_spin
+    operationId: add_bill
     tags:
-      - Game
+      - Integration
     """
 
     try:

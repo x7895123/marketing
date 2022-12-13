@@ -8,6 +8,7 @@ from sanic import text, exceptions, json
 from sanic.log import logger
 from sanic import Blueprint
 
+from .models.bill import Bill
 from ..routes.login import verify_password, verify_token
 from ..services import marketing_db
 
@@ -17,7 +18,8 @@ bp = Blueprint("iiko_bill")
 @bp.route("/iiko_bill", methods=["POST"])
 @openapi.definition(
     secured={"basicAuth": []},
-    summary="Добавление счета",
+    summary="Добавление счета c iiko",
+    body=definitions.RequestBody(Bill, required=True),
     response=[
         definitions.Response('Ok', status=200),
         definitions.Response('Authentication error', status=400)
@@ -37,8 +39,8 @@ async def iiko_bill(request):
 
     try:
         logger.info(f"start add_bill")
-        # if not await verify_password(request=request):
-        #     return text(f"Basic Authentication error", status=400)
+        if not await verify_password(request=request):
+            return text(f"Basic Authentication error", status=400)
 
         logger.info(f"request.ctx.company: {request.ctx.company}")
         logger.info(f"Sending gift request.json: {request.body}")
