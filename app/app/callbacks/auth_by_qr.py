@@ -67,6 +67,7 @@ async def process_qr_auth(message, publisher: Rabbit):
             result = {"status": 2, "message": "unrecognized"}
 
         if message.reply_to is not None and message.correlation_id is not None:
+            logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]} reply_to: {message.reply_to} - {message.correlation_id}')
             response = rapidjson.dumps(result).encode()
 
             await publisher.connect()
