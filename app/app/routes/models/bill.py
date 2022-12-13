@@ -8,5 +8,5 @@ class Bill:
     company_bill_id = str
     paytime = str
     amount = float
-    phone = str
+    phone = '+77010000864'
     payment = Payment
