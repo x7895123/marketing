@@ -42,11 +42,11 @@ async def add_qr_auth(company, assignment):
 async def add_bill(bill: dict, company):
     try:
         phone = str(bill.get('phone'))
+        phone = tools.correct_phone(phone)
         if not phone:
             logger.info(
                 f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: phone is not defined')
             return {'error': 'phone is not defined'}
-        phone = tools.correct_phone(phone)
         company_bill_id = str(bill.get('company_bill_id'))
         if not company_bill_id:
             return {'error': 'company_bill_id is not defined'}
