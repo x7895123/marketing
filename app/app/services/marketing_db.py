@@ -27,7 +27,7 @@ async def add_qr_auth(company, assignment):
     try:
         request_id = str(uuid.uuid4())
         rec = await qr_auth.QrAuth.get_or_create(
-            company=company,
+            username=company,
             request_id=request_id,
             assignment=assignment
         )
@@ -188,15 +188,24 @@ if __name__ == '__main__':
 
     tortoise.run_async(tortoise.Tortoise.init(config=config))
     tortoise.run_async(tortoise.Tortoise.generate_schemas())
-    for uname, upassword in us.items():
-        tortoise.run_async(
-            add_user(
-                name=uname,
-                password=upassword,
-                company='aqua',
-                cashdesk='aqua'
-            )
+    tortoise.run_async(
+        add_user(
+            name="city",
+            password="cityJkfmg7pdo5",
+            company='aqua',
+            cashdesk='city'
         )
+    )
+
+    # for uname, upassword in us.items():
+    #     tortoise.run_async(
+    #         add_user(
+    #             name=uname,
+    #             password=upassword,
+    #             company='aqua',
+    #             cashdesk='aqua'
+    #         )
+    #     )
     # tortoise.run_async(
     #     assign_user_code(username="aqua", code="123")
     # )
