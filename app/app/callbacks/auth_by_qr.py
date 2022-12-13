@@ -102,7 +102,7 @@ async def process_qr_auth(message, publisher: Rabbit):
             logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]} '
                         f'sent result: {result}')
 
-        await message.ack()
+        # await message.ack()
 
 
 async def add_and_publish_spin(company, bill_id, phone, cashdesk, publisher):
