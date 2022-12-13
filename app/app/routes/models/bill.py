@@ -1,7 +1,7 @@
 class Payment:
     payment_type = str
     payment_type_id = int
-    payment = float
+    payment = 1
 
 
 class Bill:
