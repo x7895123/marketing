@@ -8,7 +8,7 @@ from sanic import text, exceptions, json
 from sanic.log import logger
 from sanic import Blueprint
 
-from ..routes.models.bill import Bill
+from ..routes.models.bill import DemoBill
 from ..routes.login import verify_password, verify_token
 from ..services import marketing_db
 
@@ -20,7 +20,7 @@ bp = Blueprint("iiko_bill")
     tag="Integrator",
     secured={"basicAuth": []},
     summary="Добавление счета iiko",
-    body=definitions.RequestBody(Bill, required=True),
+    body=definitions.RequestBody(DemoBill, required=True),
     response=[
         definitions.Response('Ok', status=200),
         definitions.Response('Authentication error', status=400)
