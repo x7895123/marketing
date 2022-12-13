@@ -53,21 +53,20 @@ class FibonacciRpcClient:
         await self.channel.default_exchange.publish(
             Message(
                 str(n).encode(),
-                content_type="text/plain",
                 correlation_id=correlation_id,
                 reply_to=self.callback_queue.name,
             ),
-            routing_key="aqua_test",
+            routing_key="aqua",
         )
 
-        return int(await future)
+        return await future
 
 
 async def main() -> None:
     fibonacci_rpc = await FibonacciRpcClient().connect()
     print(" [x] Requesting fib(30)")
     response = await fibonacci_rpc.call(30)
-    print(f" [.] Got {response!r}")
+    print(f" [.] Got {response}")
 
 
 if __name__ == "__main__":
