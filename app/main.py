@@ -157,6 +157,11 @@ logger.info(f"arena_rabbit params: {arena_rabbit}")
 logger.info(f"dostyq_rabbit params: {dostyq_rabbit}")
 
 callbacks = {
+    "process_qr_auth": {
+        "queuename": process_qr_auth_queue_name,
+        "callback": process_qr_auth_callback,
+        "rabbit_params": dostyq_rabbit
+    },
     "calc_aqua_bonus": {
         "queuename": calc_aqua_bonus_queue_name,
         "callback": calc_aqua_bonus_callback,
@@ -172,12 +177,6 @@ callbacks = {
         "callback": send_gift_callback,
         "rabbit_params": arena_rabbit
     },
-    # "process_qr_auth": {
-    #     "queuename": process_qr_auth_queue_name,
-    #     "callback": process_qr_auth_callback,
-    #     "rabbit_params": dostyq_rabbit
-    # },
-
 }
 
 consume_v2(
