@@ -24,50 +24,52 @@ async def process_qr_auth(message, publisher: Rabbit):
     try:
         logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
                     f'{inspect.stack()[0][3]}: start {message.body}')
+        result = {"status": 0, "message": "ok"}
 
         body_dict = rapidjson.loads(message.body)
 
         request_id = body_dict.get('id')
         phone = body_dict.get('phone')
-        if not phone:
+        if phone:
+
+            phone = tools.correct_phone(phone)
+
+            try:
+                rec = await qr_auth.QrAuth.get(request_id=request_id)
+                logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
+                            f'{inspect.stack()[0][3]}: rec.assignment {rec.assignment}')
+                if rec.phone is None:
+                    rec.phone = phone
+                    if rec.assignment == 'spin':
+                        marketing_bill = await bills.MarketingBill.get_or_create(
+                            company=rec.username,
+                            company_bill_id=request_id,
+                            phone=phone
+                        )
+                        await marketing_bill[0].save()
+
+                        if not await add_and_publish_spin(
+                            company=rec.username,
+                            bill_id=request_id,
+                            phone=phone,
+                            cashdesk=rec.username,
+                            publisher=publisher
+                        ):
+                            result = {"status": 1, "message": "already_scanned"}
+                else:
+                    result = {"status": 1, "message": "already_scanned"}
+                await rec.save()
+            except Exception as e:
+                logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
+                result = {"status": 2, "message": "unrecognized"}
+        else:
             logger.info(
                 f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: phone is not defined')
-            await message.ack()
-            return
-        phone = tools.correct_phone(phone)
-
-        result = {"status": 0, "message": "ok"}
-        try:
-            rec = await qr_auth.QrAuth.get(request_id=request_id)
-            logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
-                        f'{inspect.stack()[0][3]}: rec.assignment {rec.assignment}')
-            if rec.phone is None:
-                rec.phone = phone
-                if rec.assignment == 'spin':
-                    marketing_bill = await bills.MarketingBill.get_or_create(
-                        company=rec.username,
-                        company_bill_id=request_id,
-                        phone=phone
-                    )
-                    await marketing_bill[0].save()
-
-                    if not await add_and_publish_spin(
-                        company=rec.username,
-                        bill_id=request_id,
-                        phone=phone,
-                        cashdesk=rec.username,
-                        publisher=publisher
-                    ):
-                        result = {"status": 1, "message": "already_scanned"}
-            else:
-                result = {"status": 1, "message": "already_scanned"}
-            await rec.save()
-        except Exception as e:
-            logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
-            result = {"status": 2, "message": "unrecognized"}
+            result = {"status": 1, "message": "phone_is _empty"}
 
         if message.reply_to is not None and message.correlation_id is not None:
-            logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]} reply_to: {message.reply_to} - {message.correlation_id}')
+            logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]} '
+                         f'reply_to: {message.reply_to} - {message.correlation_id}')
             response = rapidjson.dumps(result).encode()
 
             await publisher.connect()
