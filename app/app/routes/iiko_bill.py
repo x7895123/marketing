@@ -17,6 +17,7 @@ bp = Blueprint("iiko_bill")
 
 @bp.route("/iiko_bill", methods=["POST"])
 @openapi.definition(
+    tag="Integrator",
     secured={"basicAuth": []},
     summary="Добавление счета iiko",
     body=definitions.RequestBody(Bill, required=True),
@@ -26,16 +27,6 @@ bp = Blueprint("iiko_bill")
     ],
 )
 async def iiko_bill(request):
-    """Получение текущего задания для Фортуны
-
-    Получение задания осуществляется на основе **базовой аутентификации**.
-
-    openapi:
-    ---
-    operationId: iiko_bill
-    tags:
-      - Integration
-    """
 
     try:
         logger.info(f"start add_bill")
