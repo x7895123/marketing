@@ -17,7 +17,7 @@ bp = Blueprint("iiko_bill")
 
 @bp.route("/iiko_bill", methods=["POST"])
 @openapi.definition(
-    tag="a Integrator",
+    tag="Integrator",
     secured={"basicAuth": []},
     summary="Добавление счета iiko",
     body=definitions.RequestBody(DemoBill, required=True),
