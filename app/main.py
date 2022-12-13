@@ -164,6 +164,9 @@ process_qr_auth_callback = functools.partial(
 )
 process_qr_auth_queue_name = f'aqua'
 rabbit_params = settings.get("dostyq_rabbit")
+callbacks = {
+    process_qr_auth_queue_name: process_qr_auth_callback,
+}
 consume(
     app=app,
     callbacks=callbacks,
