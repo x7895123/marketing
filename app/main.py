@@ -151,9 +151,10 @@ process_qr_auth_callback = functools.partial(
 )
 process_qr_auth_queue_name = f'aqua'
 
-
 arena_rabbit = settings.get('arena_rabbit')
 dostyq_rabbit = settings.get("dostyq_rabbit")
+logger.info(f"rabbit_params: {arena_rabbit}")
+logger.info(f"rabbit_params: {dostyq_rabbit}")
 
 callbacks = {
     "calc_aqua_bonus": {
@@ -179,8 +180,6 @@ callbacks = {
 
 }
 
-rabbit_params = settings.get('arena_rabbit')
-logger.info(f"rabbit_params: {rabbit_params}")
 consume_v2(
     app=app,
     callbacks=callbacks,
