@@ -140,7 +140,7 @@ send_gift_queue_name = f'send_gift'
 process_qr_auth_callback = functools.partial(
     process_qr_auth, publisher=publisher
 )
-process_qr_auth_queue_name = f'aqua'
+process_qr_auth_queue_name = f'aqua_test'
 
 arena_rabbit = settings.get('arena_rabbit')
 dostyq_rabbit = settings.get("dostyq_rabbit")
