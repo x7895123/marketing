@@ -43,7 +43,7 @@ settings = {
             },
             'apps': {
                 'models': {
-                    'models': ['app.models.bills', 'app.models.users', "aerich.models"],
+                    'models': ['app.models.bills', 'app.models.users', 'app.models.qr_auth', "aerich.models"],
                     # If no default_connection specified, defaults to 'default'
                     'default_connection': 'arena',
                 }
