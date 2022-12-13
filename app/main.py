@@ -5,6 +5,7 @@ from sanic import Sanic
 import tortoise.contrib.sanic
 from sanic_ext import Extend
 
+from app.callbacks.city_calc_bonus import calc_city_bonus
 from app.callbacks.auth_by_qr import process_qr_auth
 from app.callbacks.kiiik_calc_bonus import calc_kiiik_bonus
 from app.callbacks.aqua_calc_bonus import calc_aqua_bonus
@@ -117,6 +118,12 @@ calc_aqua_bonus_callback = functools.partial(
 )
 calc_aqua_bonus_queue_name = f'aqua_calc_bonus'
 
+# city
+calc_city_bonus_callback = functools.partial(
+    calc_city_bonus, publisher=publisher
+)
+calc_city_bonus_queue_name = f'city_calc_bonus'
+
 # kiiik
 calc_kiiik_bonus_callback = functools.partial(
     calc_kiiik_bonus, publisher=publisher
@@ -149,6 +156,11 @@ callbacks = {
     "calc_aqua_bonus": {
         "queuename": calc_aqua_bonus_queue_name,
         "callback": calc_aqua_bonus_callback,
+        "rabbit_params": arena_rabbit
+    },
+    "calc_city_bonus": {
+        "queuename": calc_city_bonus_queue_name,
+        "callback": calc_city_bonus_callback,
         "rabbit_params": arena_rabbit
     },
     "calc_kiiik_bonus": {
