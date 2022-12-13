@@ -10,7 +10,7 @@ from app.callbacks.kiiik_calc_bonus import calc_kiiik_bonus
 from app.callbacks.aqua_calc_bonus import calc_aqua_bonus
 
 from app.send_gift_callback.send_gift import send_gift
-from app.rabbit.consumer_rabbit import consume
+from app.rabbit.consumer_rabbit import consume, consume_v2
 from app.rabbit.rabbit import Rabbit
 from app.routes.login import bp as login_bp
 from app.routes.game import bp as game_bp
@@ -145,35 +145,46 @@ send_gift_callback = functools.partial(
 )
 send_gift_queue_name = f'send_gift'
 
-callbacks = {
-    calc_aqua_bonus_queue_name: calc_aqua_bonus_callback,
-    calc_kiiik_bonus_queue_name: calc_kiiik_bonus_callback,
-    send_gift_queue_name: send_gift_callback,
-}
-rabbit_params = settings.get('arena_rabbit')
-logger.info(f"rabbit_params: {rabbit_params}")
-consume(
-    app=app,
-    callbacks=callbacks,
-    max_retries=None,
-    **rabbit_params
-)
-
-# spin
+# qr_auth
 process_qr_auth_callback = functools.partial(
     process_qr_auth, publisher=publisher
 )
 process_qr_auth_queue_name = f'aqua'
+
+
+arena_rabbit = settings.get('arena_rabbit')
+dostyq_rabbit = settings.get("dostyq_rabbit")
+
 callbacks = {
-    process_qr_auth_queue_name: process_qr_auth_callback,
+    "calc_aqua_bonus": {
+        "queuename": calc_aqua_bonus_queue_name,
+        "callback": calc_aqua_bonus_callback,
+        "rabbit_params": arena_rabbit
+    },
+    "calc_kiiik_bonus": {
+        "queuename": calc_kiiik_bonus_queue_name,
+        "callback": calc_kiiik_bonus_callback,
+        "rabbit_params": arena_rabbit
+    },
+    "send_gift": {
+        "queuename": send_gift_queue_name,
+        "callback": send_gift_callback,
+        "rabbit_params": arena_rabbit
+    },
+    "process_qr_auth": {
+        "queuename": process_qr_auth_queue_name,
+        "callback": process_qr_auth_callback,
+        "rabbit_params": dostyq_rabbit
+    },
+
 }
-rabbit_params = settings.get("dostyq_rabbit")
+
+rabbit_params = settings.get('arena_rabbit')
 logger.info(f"rabbit_params: {rabbit_params}")
-consume(
+consume_v2(
     app=app,
     callbacks=callbacks,
-    max_retries=None,
-    **rabbit_params
+    max_retries=None
 )
 
 
