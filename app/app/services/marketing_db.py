@@ -10,16 +10,13 @@ from sanic.log import logger
 from base64 import b64encode
 
 from tortoise.expressions import Q
-from ..models import bills, users, qr_auth
-from ..shared import tools
 
-
-# if os.name == 'nt':
-#     from app.app.models import bills, users, qr_auth
-#     from app.app.shared import tools
-# else:
-#     from ..models import bills, users, qr_auth
-#     from ..shared import tools
+if os.name == 'nt':
+    from app.app.models import bills, users, qr_auth
+    from app.app.shared import tools
+else:
+    from ..models import bills, users, qr_auth
+    from ..shared import tools
 
 
 def d():
