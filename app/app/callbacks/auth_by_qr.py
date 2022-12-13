@@ -2,6 +2,7 @@ import datetime
 import inspect
 import math
 from aio_pika import Message, connect
+
 from aio_pika.abc import AbstractIncomingMessage
 
 import rapidjson
@@ -14,7 +15,7 @@ import os
 
 if os.name == 'nt':
     from app.app.models import bills, qr_auth
-    from app.app.shared import tools
+    from app.app.shared import tools, settings
 else:
     from ..models import bills, qr_auth
     from ..shared import tools
@@ -78,10 +79,17 @@ async def process_qr_auth(message, publisher: Rabbit):
 
             response = rapidjson.dumps(result).encode()
 
-            connection = await publisher.connect()
+            dostyq_rabbit = settings.get("dostyq_rabbit")
+            connection = await connect(
+                host=dostyq_rabbit.get('host'),
+                port=dostyq_rabbit.get('port'),
+                login=dostyq_rabbit.get('user'),
+                password=dostyq_rabbit.get('password')
+            )
+
+            # Creating a channel
             channel = await connection.channel()
             exchange = channel.default_exchange
-
             await exchange.publish(
                 Message(
                     body=response,
@@ -89,6 +97,8 @@ async def process_qr_auth(message, publisher: Rabbit):
                 ),
                 routing_key=message.reply_to,
             )
+            print("Request complete")
+            await message.ack()
             logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]} '
                         f'sent result: {result}')
 

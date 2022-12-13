@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 
+import rapidjson
 from aio_pika import Message, connect
 from aio_pika.abc import AbstractIncomingMessage
 
@@ -23,7 +24,7 @@ async def on_response(message: AbstractIncomingMessage):
     # response = str(fib(n)).encode()
 
     result = {"status": 1, "message": "phone_is _empty"}
-    response = json.dumps(result).encode()
+    response = rapidjson.dumps(result).encode()
 
     dostyq_rabbit = settings.get("dostyq_rabbit")
     connection = await connect(
