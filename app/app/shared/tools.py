@@ -95,4 +95,4 @@ def parse_date_tz(date_str):
 
 
 if __name__ == '__main__':
-    pass
+    print(correct_phone('гость1'))

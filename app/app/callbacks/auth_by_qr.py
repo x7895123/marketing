@@ -21,6 +21,7 @@ else:
 
 
 async def process_qr_auth(message, publisher: Rabbit):
+    result = {"status": 2, "message": "unrecognized"}
     try:
         logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
                     f'{inspect.stack()[0][3]}: start {message.body}')
@@ -66,7 +67,9 @@ async def process_qr_auth(message, publisher: Rabbit):
             logger.info(
                 f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: phone is not defined')
             result = {"status": 1, "message": "phone_is _empty"}
-
+    except Exception as e:
+        logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
+    finally:
         if message.reply_to is not None and message.correlation_id is not None:
             logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]} '
                          f'reply_to: {message.reply_to} - {message.correlation_id}')
@@ -85,8 +88,6 @@ async def process_qr_auth(message, publisher: Rabbit):
             )
         await message.ack()
 
-    except Exception as e:
-        logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
 
 
 async def add_and_publish_spin(company, bill_id, phone, cashdesk, publisher):
