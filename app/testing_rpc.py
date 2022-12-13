@@ -2,6 +2,7 @@ import asyncio
 import uuid
 from typing import MutableMapping
 
+import rapidjson
 from aio_pika import Message, connect
 from aio_pika.abc import (
     AbstractChannel, AbstractConnection, AbstractIncomingMessage, AbstractQueue,
@@ -50,9 +51,13 @@ class FibonacciRpcClient:
 
         self.futures[correlation_id] = future
 
+        body = {"uuid": "d4de1659-2adc-4add-9a42-40f508ba9c81", "phone": "77766656544"}
+
+        body = rapidjson.dumps(body).encode()
+
         await self.channel.default_exchange.publish(
             Message(
-                str(n).encode(),
+                body,
                 correlation_id=correlation_id,
                 reply_to=self.callback_queue.name,
             ),
