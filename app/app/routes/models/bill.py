@@ -9,4 +9,4 @@ class Bill:
     paytime = str
     amount = float
     phone = '+77010000864'
-    payment = Payment
+    # payment = Payment
