@@ -5,6 +5,7 @@ from sanic import Sanic
 import tortoise.contrib.sanic
 from sanic_ext import Extend
 
+from app.callbacks.auth_by_qr import process_qr_auth
 from app.callbacks.kiiik_calc_bonus import calc_kiiik_bonus
 from app.callbacks.aqua_calc_bonus import calc_aqua_bonus
 
@@ -158,11 +159,17 @@ consume(
 )
 
 # spin
-calc_aqua_bonus_callback = functools.partial(
-    calc_aqua_bonus, publisher=publisher
+process_qr_auth_callback = functools.partial(
+    process_qr_auth, publisher=publisher
 )
-calc_aqua_bonus_queue_name = f'aqua_calc_bonus'
-
+process_qr_auth_queue_name = f'aqua'
+rabbit_params = settings.get("dostyq_rabbit")
+consume(
+    app=app,
+    callbacks=callbacks,
+    max_retries=None,
+    **rabbit_params
+)
 
 
 if __name__ == "__main__":
