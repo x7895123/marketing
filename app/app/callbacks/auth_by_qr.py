@@ -29,7 +29,7 @@ async def process_qr_auth(message, publisher: Rabbit):
 
         body_dict = rapidjson.loads(message.body)
 
-        request_id = body_dict.get('id')
+        request_id = body_dict.get('uuid')
         phone = body_dict.get('phone')
         if phone:
             phone = tools.correct_phone(phone)
