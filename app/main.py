@@ -153,8 +153,8 @@ process_qr_auth_queue_name = f'aqua'
 
 arena_rabbit = settings.get('arena_rabbit')
 dostyq_rabbit = settings.get("dostyq_rabbit")
-logger.info(f"rabbit_params: {arena_rabbit}")
-logger.info(f"rabbit_params: {dostyq_rabbit}")
+logger.info(f"arena_rabbit params: {arena_rabbit}")
+logger.info(f"dostyq_rabbit params: {dostyq_rabbit}")
 
 callbacks = {
     "calc_aqua_bonus": {
