@@ -8,7 +8,7 @@ from sanic import text, exceptions, json
 from sanic.log import logger
 from sanic import Blueprint
 
-from .models.bill import Bill
+from ..routes.models.bill import Bill
 from ..routes.login import verify_password, verify_token
 from ..services import marketing_db
 
