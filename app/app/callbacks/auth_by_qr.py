@@ -32,9 +32,7 @@ async def process_qr_auth(message, publisher: Rabbit):
         request_id = body_dict.get('id')
         phone = body_dict.get('phone')
         if phone:
-
             phone = tools.correct_phone(phone)
-
             try:
                 rec = await qr_auth.QrAuth.get(request_id=request_id)
                 logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
