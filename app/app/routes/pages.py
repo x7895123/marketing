@@ -46,7 +46,6 @@ def routes(app):
         else:
             return partners.get("")
 
-
     @app.route("/x3")
     @openapi.definition(
         exclude=True
