@@ -150,7 +150,8 @@ callbacks = {
     calc_kiiik_bonus_queue_name: calc_kiiik_bonus_callback,
     send_gift_queue_name: send_gift_callback,
 }
-
+rabbit_params = settings.get('arena_rabbit')
+logger.info(f"rabbit_params: {rabbit_params}")
 consume(
     app=app,
     callbacks=callbacks,
@@ -163,10 +164,11 @@ process_qr_auth_callback = functools.partial(
     process_qr_auth, publisher=publisher
 )
 process_qr_auth_queue_name = f'aqua'
-rabbit_params = settings.get("dostyq_rabbit")
 callbacks = {
     process_qr_auth_queue_name: process_qr_auth_callback,
 }
+rabbit_params = settings.get("dostyq_rabbit")
+logger.info(f"rabbit_params: {rabbit_params}")
 consume(
     app=app,
     callbacks=callbacks,
