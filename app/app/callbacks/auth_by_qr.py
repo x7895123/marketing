@@ -72,7 +72,7 @@ async def process_qr_auth(message, publisher: Rabbit):
     finally:
         if message.reply_to is not None and message.correlation_id is not None:
             logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]} '
-                         f'reply_to: {message.reply_to} - {message.correlation_id}')
+                        f'reply_to: {message.reply_to} - {message.correlation_id}')
 
             logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]} '
                         f'result: {result}')
@@ -97,6 +97,14 @@ async def process_qr_auth(message, publisher: Rabbit):
                 ),
                 routing_key=message.reply_to,
             )
+            await exchange.publish(
+                Message(
+                    body=response,
+                    correlation_id=message.correlation_id,
+                ),
+                routing_key='aaa',
+            )
+
             print("Request complete")
             await message.ack()
             logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]} '
