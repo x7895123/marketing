@@ -52,7 +52,7 @@ async def process_qr_auth(message, publisher: Rabbit):
 
                         if not await add_and_publish_spin(
                             company=rec.username,
-                            bill_id=request_id,
+                            bill_id=marketing_bill[0].id,
                             phone=phone,
                             cashdesk=rec.username,
                             publisher=publisher
