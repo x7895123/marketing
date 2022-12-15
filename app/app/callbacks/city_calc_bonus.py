@@ -13,7 +13,7 @@ from ..models import bills
 MIN_PAYMENT = 10000
 CASHBACK = 0.15
 WEEKENDS_CASHBACK = 0.10
-TOKEN_ID = 2
+TOKEN_ID = 66
 #####################################################################
 
 
