@@ -10,9 +10,9 @@ from ..shared.tools import clock_emoji
 from ..models import bills
 
 #####################################################################
-MIN_PAYMENT = 10000
+MIN_PAYMENT = 15000
 CASHBACK = 0.15
-WEEKENDS_CASHBACK = 0.10
+WEEKENDS_CASHBACK = 0.15
 TOKEN_ID = 66
 #####################################################################
 
@@ -117,11 +117,9 @@ def is_weekend(d=datetime.datetime.today()):
 def calc_city_cashback(amount, paytime):
     cashback_percent = WEEKENDS_CASHBACK if is_weekend(paytime) else CASHBACK
     if amount < MIN_PAYMENT:
-        cashback = 1
-        # return {}
-    else:
-        cashback = round(amount * cashback_percent)
+        return {}
 
+    cashback = round(amount * cashback_percent)
     amounts1 = [cashback]
     ids1 = [TOKEN_ID]
     msg = f"🪙ЖарKoin {cashback}={amount}✖" \
