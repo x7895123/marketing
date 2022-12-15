@@ -46,12 +46,13 @@ async def get_spin_qr(request):
         request_id = await marketing_db.add_qr_auth(request.ctx.company, 'spin')
         logger.info(f"request_id: {request_id}")
 
-        data = {
-            "action": "aquaV1",
-            "queue": "aqua",
-            "id": request_id,
-        }
-        data = rapidjson.dumps(data)
+        # data = {
+        #     "action": "aquaV1",
+        #     "queue": "aqua",
+        #     "id": request_id,
+        # }
+        # data = rapidjson.dumps(data)
+        data = f"https://qr.dostyq.app/?action=quaV1&queue=aqua&id={request_id}"
         qr = create_qr(data)
 
         with io.BytesIO() as output:
