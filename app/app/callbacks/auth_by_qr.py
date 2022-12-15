@@ -41,6 +41,7 @@ async def process_qr_auth(message, publisher: Rabbit):
                             f'{inspect.stack()[0][3]}: rec.assignment {rec.assignment}')
                 if rec.phone is None:
                     rec.phone = phone
+                    await rec.save()
                     if rec.assignment == 'spin':
                         marketing_bill = await bills.MarketingBill.get_or_create(
                             company=rec.username,
