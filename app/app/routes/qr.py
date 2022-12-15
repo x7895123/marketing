@@ -52,7 +52,7 @@ async def get_spin_qr(request):
         #     "id": request_id,
         # }
         # data = rapidjson.dumps(data)
-        data = f"https://qr.dostyq.app/?action=quaV1&queue=aqua&id={request_id}"
+        data = f"https://qr.dostyq.app/?action=aquaV1&queue=aqua&id={request_id}"
         qr = create_qr(data)
 
         with io.BytesIO() as output:
