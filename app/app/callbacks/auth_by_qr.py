@@ -58,6 +58,8 @@ async def process_qr_auth(message, publisher: Rabbit):
                             publisher=publisher
                         ):
                             result = {"status": 1, "message": "already_scanned"}
+                        else:
+                            result = {"status": 0, "message": "Іске сәт!"}
                 else:
                     result = {"status": 1, "message": "already_scanned"}
             except Exception as e:
