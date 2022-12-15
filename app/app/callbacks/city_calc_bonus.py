@@ -124,7 +124,7 @@ def calc_city_cashback(amount, paytime):
 
     amounts1 = [cashback]
     ids1 = [TOKEN_ID]
-    msg = f"💰ЖарCoin {cashback}={amount}✖" \
+    msg = f"🪙ЖарKoin {cashback}={amount}✖" \
           f"{int(cashback_percent * 100)}% " \
           f"🗓{paytime.strftime('%d.%m.%y')}{clock_emoji(paytime)}{paytime.strftime('%H:%M')}"
 
