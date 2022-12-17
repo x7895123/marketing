@@ -79,7 +79,6 @@ async def calc_aqua_bonus(message, publisher: Rabbit):
                 company=company,
                 bill_id=bill_id,
                 phone=phone,
-                cashdesk=cashdesk,
                 publisher=publisher
             )
 
@@ -119,7 +118,7 @@ async def add_and_publish_cashback(
         logger.info(f"cashback already published {phone}")
 
 
-async def add_and_publish_spin(company, bill_id, phone, cashdesk, publisher):
+async def add_and_publish_spin(company, bill_id, phone, publisher):
     gift = await bills.MarketingGift.get_or_create(
         assignment='spin',
         bill_id=bill_id,
@@ -133,7 +132,7 @@ async def add_and_publish_spin(company, bill_id, phone, cashdesk, publisher):
         }
         if await publisher.publish(
                 body=rapidjson.dumps(spin),
-                queue_name=f'{company}_{cashdesk}_spin'
+                queue_name=f'{company}_spin'
         ):
             await gift.save()
             logger.info(f"spin published {phone}")

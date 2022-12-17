@@ -54,7 +54,6 @@ async def process_qr_auth(message, publisher: Rabbit):
                             company=rec.username,
                             bill_id=marketing_bill[0].id,
                             phone=phone,
-                            cashdesk=rec.username,
                             publisher=publisher
                         ):
                             result = {"status": 1, "message": "already_scanned"}
@@ -115,7 +114,7 @@ async def process_qr_auth(message, publisher: Rabbit):
             await message.ack()
 
 
-async def add_and_publish_spin(company, bill_id, phone, cashdesk, publisher):
+async def add_and_publish_spin(company, bill_id, phone, publisher):
     gift = await bills.MarketingGift.get_or_create(
         assignment='spin',
         bill_id=bill_id,
@@ -129,7 +128,7 @@ async def add_and_publish_spin(company, bill_id, phone, cashdesk, publisher):
         }
         if await publisher.publish(
                 body=rapidjson.dumps(spin),
-                queue_name=f'{company}_{cashdesk}_spin'
+                queue_name=f'{company}_spin'
         ):
             await gift.save()
             logger.info(f"spin published {phone}")
