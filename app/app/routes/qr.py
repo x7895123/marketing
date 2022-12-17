@@ -92,10 +92,7 @@ async def qr_auth(request):
         if not await verify_password(request=request):
             return text(f"Basic Authentication error", status=400)
 
-        logger.info(f"get_bill_qr: {request.ctx.company}")
-        request_id = await marketing_db.add_qr_auth(request.ctx.company, 'spin')
-        logger.info(f"request_id: {request_id}")
-
+        logger.info(f"qr_auth: {request.ctx.company}")
         result = await qr_auth_service.process_qr_auth(request.json, request.app.ctx.publisher)
         return text(result.get("message"), status=200 if result.get("status") == 0 else 400)
 
