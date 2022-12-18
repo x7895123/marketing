@@ -28,7 +28,9 @@ async def process_qr_auth(message: AbstractIncomingMessage, publisher: Rabbit):
 
         body_dict = rapidjson.loads(message.body)
 
-        result = qr_auth_service.process_qr_auth(body=body_dict, publisher=publisher)
+        result = await qr_auth_service.process_qr_auth(body=body_dict, publisher=publisher)
+        logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][2]} '
+                    f'{inspect.stack()[0][3]}: result {result}')
 
         # request_id = body_dict.get('uuid')
         # phone = body_dict.get('phone')
