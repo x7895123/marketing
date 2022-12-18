@@ -42,12 +42,11 @@ async def process_qr_auth(body: dict, publisher: Rabbit):
             return result
 
         if rec.assignment == 'spin':
-            is_already_play = await is_already_assigned(
+            if await is_already_assigned(
                 username=rec.username,
                 assignment=rec.assignment,
                 phone=rec.phone
-            )
-            if is_already_play:
+            ):
                 result = {"status": 3, "message": "already_played"}
                 logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {result}')
                 return result
