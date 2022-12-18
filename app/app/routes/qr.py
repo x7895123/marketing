@@ -93,7 +93,10 @@ async def qr_auth(request):
             return text(f"Basic Authentication error", status=400)
 
         logger.info(f"qr_auth: {request.ctx.company}")
-        result = await qr_auth_service.process_qr_auth(request.json, request.app.ctx.publisher)
+        result = await qr_auth_service.process_qr_auth(
+            body=request.json,
+            publisher=request.app.ctx.publisher
+        )
         return text(result.get("message"), status=200 if result.get("status") == 0 else 400)
 
     except Exception as e:

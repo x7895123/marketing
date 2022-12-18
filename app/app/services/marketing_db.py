@@ -137,6 +137,18 @@ async def check_user(username, password):
         return None
 
 
+async def is_already_assigned(username, assignment, phone):
+    try:
+        result = await qr_auth.QrAuth.exists(
+            Q(username=username) & Q(assignment=assignment) & Q(phone=phone)
+        )
+        print(result)
+        return result
+    except Exception as e:
+        logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
+        return None
+
+
 async def assign_user_code(username, code):
     try:
         user = await users.Users.get(name=username)
@@ -178,7 +190,7 @@ if __name__ == '__main__':
         },
         'apps': {
             'models': {
-                'models': ['app.app.models.bills', 'app.app.models.users',
+                'models': ['app.app.models.bills', 'app.app.models.users', 'app.app.models.qr_auth',
                            "aerich.models"],
                 # If no default_connection specified, defaults to 'default'
                 'default_connection': 'arena',
@@ -188,14 +200,17 @@ if __name__ == '__main__':
 
     tortoise.run_async(tortoise.Tortoise.init(config=config))
     tortoise.run_async(tortoise.Tortoise.generate_schemas())
-    tortoise.run_async(
-        add_user(
-            name="city",
-            password="cityJkfmg7pdo5",
-            company='aqua',
-            cashdesk='city'
-        )
-    )
+    tortoise.run_async(is_already_assigned(username='city', assignment='spin', phone='+77010000864'))
+
+
+    # tortoise.run_async(
+    #     add_user(
+    #         name="city",
+    #         password="cityJkfmg7pdo5",
+    #         company='aqua',
+    #         cashdesk='city'
+    #     )
+    # )
 
     # for uname, upassword in us.items():
     #     tortoise.run_async(
