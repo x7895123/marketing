@@ -28,7 +28,8 @@ async def process_qr_auth(body: dict, publisher: Rabbit):
                     f'{inspect.stack()[0][3]}: data {request_id} {phone}')
 
         if not phone:
-            result = {"status": 1, "message": "phone_is _empty"}
+            result = {"status": 2, "message": "unrecognized"}
+            logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: phone is not exists')
             logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {result}')
             return result
 
@@ -70,7 +71,7 @@ async def process_qr_auth(body: dict, publisher: Rabbit):
                 logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {result}')
                 return result
             else:
-                result = {"status": 0, "message": "Іске сәт!"}
+                result = {"status": 0, "message": "good_luck"}
                 logger.info(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {result}')
                 return result
     except Exception as e:
