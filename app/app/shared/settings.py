@@ -25,6 +25,7 @@ settings = {
             "kiiik": "Basic YXF1YWtyZzphcXVhSmtmbWc3cGRvNSE=",
             "arena": "Basic YXF1YWtyZzphcXVhSmtmbWc3cGRvNSE=",
             "city": "Basic YXF1YWtyZzphcXVhSmtmbWc3cGRvNSE=",
+            "dostyq": "Basic RG9zdHlxUmVzdDpEb3N0eXFKa2ZtZzdwZG81IQ==",
         },
         "aqua_api_host": "192.168.90.221:4042",
         "api": {
