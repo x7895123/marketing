@@ -18,6 +18,7 @@ from app.routes.game import bp as game_bp
 from app.routes.bill import bp as bill_bp
 from app.routes.iiko_bill import bp as iiko_bp
 from app.routes.qr import bp as qr_bp
+from app.routes.admin import bp as admin_bp
 
 from app.routes.pages import routes as pages_routes
 from app.middlewares.middlewares import setup_middlewares
@@ -55,6 +56,7 @@ app.blueprint(game_bp)
 app.blueprint(bill_bp)
 app.blueprint(iiko_bp)
 app.blueprint(qr_bp)
+app.blueprint(admin_bp)
 pages_routes(app)
 setup_middlewares(app)
 
