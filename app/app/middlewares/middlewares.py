@@ -1,6 +1,8 @@
 import secure
 from sanic.log import logger
 
+from ..services import marketing_db
+
 secure_headers = secure.Secure().framework
 
 
@@ -18,7 +20,7 @@ def setup_middlewares(app):
         logger.info(f"extract_company request.token: {request.token}")
         try:
             if str(request.token).startswith('Basic'):
-                request.ctx.company = request.credentials.username
+                request.ctx.company = marketing_db.get_user_company(request.credentials.username)
                 logger.info(f"extract_company : {request.ctx.company}")
         except Exception as e:
             logger.warning(f"extract_company exception: {e}")

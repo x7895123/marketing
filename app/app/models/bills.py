@@ -1,10 +1,13 @@
 from tortoise import Model, fields
 
+from .users import Users
+
 
 class MarketingBill(Model):
     id = fields.IntField(pk=True)
     create_ts = fields.DatetimeField(auto_now_add=True)
     modified_ts = fields.DatetimeField(auto_now=True)
+    username = fields.CharField(max_length=200)
     company = fields.CharField(max_length=200)
     cashdesk = fields.CharField(max_length=200, null=True)
     company_bill_id = fields.CharField(max_length=200, unique=True)
@@ -16,6 +19,10 @@ class MarketingBill(Model):
     published = fields.BooleanField(null=True, default=False)
 
     gifts: fields.ReverseRelation["MarketingGift"]
+
+    users: fields.ForeignKeyRelation[Users] = fields.ForeignKeyField(
+        "models.Users", related_name="bills", to_field="id")
+
 
     class Meta:
         table = "marketing_bill"

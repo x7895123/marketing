@@ -1,4 +1,5 @@
 from tortoise import Model, fields
+from .bills import MarketingBill
 
 
 class Users(Model):
@@ -10,6 +11,8 @@ class Users(Model):
     name = fields.CharField(max_length=200, unique=True)
     password = fields.CharField(max_length=1000)
     code = fields.CharField(max_length=1000, null=True)
+
+    bills: fields.ReverseRelation["MarketingBill"]
 
     def __str__(self):
         return f"marketing_bill id:{self.id}, create_ts:{self.create_ts}, " \

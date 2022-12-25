@@ -61,10 +61,10 @@ async def verify_password(request, check_user=None):
         return False
 
 
-async def gen_token(company):
+async def gen_token(username):
     dt = datetime.now(tz=timezone.utc) + timedelta(days=2)
     return jwt.encode(
-        {'exp': dt, 'company': company},
+        {'exp': dt, 'company': username},
         secret,
         algorithm='HS256'
     )
@@ -112,7 +112,7 @@ async def login(request: Request):
         if not await verify_password(request=request):
             return text(f"Basic Authentication error", status=400)
 
-        if token := await gen_token(request.ctx.company):
+        if token := await gen_token(request.credentials.username):
             return text(token)
         else:
             return text(f"Getting Bearer Authentication error", status=400)

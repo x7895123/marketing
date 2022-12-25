@@ -23,11 +23,11 @@ def d():
     print('hi')
 
 
-async def add_qr_auth(company, assignment):
+async def add_qr_auth(username, assignment):
     try:
         request_id = str(uuid.uuid4())
         rec = await qr_auth.QrAuth.get_or_create(
-            username=company,
+            username=username,
             request_id=request_id,
             assignment=assignment
         )
@@ -39,8 +39,13 @@ async def add_qr_auth(company, assignment):
         return None
 
 
-async def add_bill(bill: dict, company):
+async def add_bill(bill: dict, username):
     try:
+
+        user = await users.Users.get(name=username)
+        company = user.company
+        user_cashdesk = user.cashdesk
+
         phone = str(bill.get('phone'))
         phone = tools.correct_phone(phone)
         if not phone:
@@ -51,7 +56,7 @@ async def add_bill(bill: dict, company):
         if not company_bill_id:
             return {'error': 'company_bill_id is not defined'}
         company_bill_id = f"{company}-{company_bill_id}"
-        cashdesk = bill.get('cashdesk', company)
+        cashdesk = bill.get('cashdesk', user_cashdesk)
         paytime = bill.get('paytime', datetime.datetime.now().strftime(
             "%Y-%m-%d %H:%M:%S"))
         amount = bill.get('amount')
@@ -59,6 +64,7 @@ async def add_bill(bill: dict, company):
         deal = bill.get('deal', {})
 
         marketing_bill = await bills.MarketingBill.get_or_create(
+            username=username,
             company=company,
             cashdesk=cashdesk,
             company_bill_id=company_bill_id,
@@ -66,7 +72,8 @@ async def add_bill(bill: dict, company):
             amount=amount,
             paytime=paytime,
             original_bill=bill,
-            deal=deal
+            deal=deal,
+            users_id=user.id
         )
         await marketing_bill[0].save()
         logger.info(f"bill saved: {marketing_bill[0]}")
@@ -136,6 +143,24 @@ async def check_user(username, password):
         logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
         return None
 
+
+async def get_user_company(username):
+    try:
+        result = await users.Users.filter(name=username).values("company")
+        logger.info(result[0].get('company') if result else "")
+        return result[0].get('company') if result else ""
+    except Exception as e:
+        logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
+        return None
+
+
+async def get_user(username):
+    try:
+        result = await users.Users.get(name=username)
+        return result
+    except Exception as e:
+        logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
+        return None
 
 async def is_already_assigned(username, assignment, phone):
     try:

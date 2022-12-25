@@ -42,7 +42,7 @@ async def get_spin(request):
 
         logger.info(f"Getting: {request.body}")
 
-        spin_queue_name = f'{request.ctx.company}_spin'
+        spin_queue_name = f'{request.credentials.username}_spin'
         while message := await request.app.ctx.publisher.get(
                 spin_queue_name
         ):
@@ -94,7 +94,7 @@ async def get_items(request):
         if not await verify_password(request=request):
             return text(f"Basic Authentication error", status=400)
 
-        logger.info(f"get_items: {items.get(request.ctx.company)}")
+        logger.info(f"get_items: {items.get(request.credentials.username)}")
         return json(items.get(request.ctx.company))
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')

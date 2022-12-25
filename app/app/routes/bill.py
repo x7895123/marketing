@@ -4,7 +4,7 @@ import uuid
 import rapidjson
 from sanic_ext import openapi
 from sanic_ext.extensions.openapi import definitions
-from sanic import text, exceptions, json
+from sanic import text, exceptions, json, Request
 from sanic.log import logger
 from sanic import Blueprint
 
@@ -23,7 +23,7 @@ bp = Blueprint("bill")
         definitions.Response('Authentication error', status=400)
     ],
 )
-async def add_bill(request):
+async def add_bill(request: Request):
     """Получение текущего задания для Фортуны
 
     Получение задания осуществляется на основе **базовой аутентификации**.
@@ -42,7 +42,7 @@ async def add_bill(request):
 
         logger.info(f"request.ctx.company: {request.ctx.company}")
 
-        bill = await marketing_db.add_bill(request.json, request.ctx.company)
+        bill = await marketing_db.add_bill(request.json, request.credentials.username)
         logger.info(f"bill_id: {bill.id}")
         if not bill:
             return text(f"error add bill: {request.json}", status=400)
@@ -78,7 +78,7 @@ async def add_bill(request):
         definitions.Response('Authentication error', status=400)
     ],
 )
-async def transfer(request):
+async def transfer(request: Request):
     """Transfer tokens
 
     Transfer tokens осуществляется на основе **базовой аутентификации**.
@@ -127,7 +127,7 @@ async def transfer(request):
             "deal": deal
         }
 
-        bill = await marketing_db.add_bill(bill_body, request.ctx.company)
+        bill = await marketing_db.add_bill(bill_body, request.credentials.username)
         logger.info(f"bill_id: {bill.id}")
         if not bill:
             return text(f"error add bill: {request.json}", status=400)
