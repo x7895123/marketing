@@ -95,7 +95,7 @@ async def get_items(request):
             return text(f"Basic Authentication error", status=400)
 
         logger.info(f"get_items: {items.get(request.credentials.username)}")
-        return json(items.get(request.ctx.company))
+        return json(items.get(request.credentials.username))
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
         return json(f"get_spin error", status=400)
