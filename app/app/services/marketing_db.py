@@ -155,12 +155,15 @@ async def get_user_company(username):
 
 
 async def get_user(username) -> users.Users:
-    try:
-        result = await users.Users.get(name=username)
-        return result
-    except Exception as e:
-        logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
-        return None
+    result = await users.Users.get(name=username)
+    return result
+    # try:
+    #     result = await users.Users.get(name=username)
+    #     return result
+    # except Exception as e:
+    #     logger.error(f"{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}")
+    #     return None
+
 
 async def is_already_assigned(username, assignment, phone):
     try:
