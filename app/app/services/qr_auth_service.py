@@ -55,7 +55,7 @@ async def process_qr_auth(body: dict, publisher: Rabbit):
 
             rec.phone = phone
             await rec.save()
-            user = marketing_db.get_user(rec.username)
+            user = await marketing_db.get_user(rec.username)
             marketing_bill = await bills.MarketingBill.get_or_create(
                 username=rec.username,
                 company=user.company,

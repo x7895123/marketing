@@ -154,7 +154,7 @@ async def get_user_company(username):
         return None
 
 
-async def get_user(username):
+async def get_user(username) -> users.Users:
     try:
         result = await users.Users.get(name=username)
         return result
