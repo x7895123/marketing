@@ -3,6 +3,7 @@ import inspect
 import rapidjson
 from sanic.log import logger
 
+from . import marketing_db
 from .marketing_db import is_already_assigned
 from ..rabbit.rabbit import Rabbit
 
@@ -54,8 +55,11 @@ async def process_qr_auth(body: dict, publisher: Rabbit):
 
             rec.phone = phone
             await rec.save()
+            user = marketing_db.get_user(rec.username)
             marketing_bill = await bills.MarketingBill.get_or_create(
-                company=rec.username,
+                username=rec.username,
+                company=user.company,
+                users_id=user.id,
                 company_bill_id=request_id,
                 phone=phone
             )
