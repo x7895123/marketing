@@ -167,7 +167,7 @@ async def get_user(username) -> users.Users:
 
 async def is_already_assigned(username, assignment, phone):
     try:
-        if phone in ('+77010000864', '+77014123999'):
+        if phone in ('+77010000864', '+77014123999', '+380667159999', '+77084910634'):
             return False
 
         result = await qr_auth.QrAuth.exists(
