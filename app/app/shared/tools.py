@@ -80,7 +80,7 @@ def correct_phone(phone):
     if len(phone) < 10:
         return None
 
-    phone = phonenumbers.parse(number=phone, region='KZ' if phone.startswith('7') else 'UA')
+    phone = phonenumbers.parse(number=phone, region='UA' if phone.startswith('380') else 'KZ')
     phone = phonenumbers.format_number(phone, phonenumbers.PhoneNumberFormat.E164)
     logger.debug(f'correct_phone {phone}')
     return phone
@@ -98,4 +98,4 @@ def parse_date_tz(date_str):
 
 
 if __name__ == '__main__':
-    print(correct_phone('+780667159999'))
+    print(correct_phone('+87010000864'))
