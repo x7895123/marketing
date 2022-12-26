@@ -97,7 +97,9 @@ async def qr_auth(request):
             body=request.json,
             publisher=request.app.ctx.publisher
         )
-        return text(result.get("message"), status=200 if result.get("status") == 0 else 400)
+        logger.info(f"qr_auth: {rapidjson.dumps(result)}")
+        return text(rapidjson.dumps(result), status=200 if result.get("status") == 0 else 400)
+        # return text(result.get("message"), status=200 if result.get("status") == 0 else 400)
 
     except Exception as e:
         logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
