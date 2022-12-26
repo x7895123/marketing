@@ -75,9 +75,12 @@ def number_emoji(n):
 
 def correct_phone(phone):
     phone = re.sub("[^0-9]", "", phone)
-    if len(phone) > 11 or len(phone) < 10:
+    # if len(phone) > 11 or len(phone) < 10:
+    #     return None
+    if len(phone) < 10:
         return None
-    phone = phonenumbers.parse(phone, "KZ")
+
+    phone = phonenumbers.parse(number=phone, region='KZ' if phone.startswith('7') else 'UA')
     phone = phonenumbers.format_number(phone, phonenumbers.PhoneNumberFormat.E164)
     logger.debug(f'correct_phone {phone}')
     return phone
@@ -95,4 +98,4 @@ def parse_date_tz(date_str):
 
 
 if __name__ == '__main__':
-    print(correct_phone('гость1'))
+    print(correct_phone('+780667159999'))
