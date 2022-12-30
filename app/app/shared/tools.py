@@ -1,3 +1,4 @@
+import inspect
 import re
 
 import phonenumbers
@@ -74,16 +75,20 @@ def number_emoji(n):
 
 
 def correct_phone(phone):
-    phone = re.sub("[^0-9]", "", phone)
-    # if len(phone) > 11 or len(phone) < 10:
-    #     return None
-    if len(phone) < 10:
-        return None
+    try:
+        phone = re.sub("[^0-9]", "", phone)
+        # if len(phone) > 11 or len(phone) < 10:
+        #     return None
+        if len(phone) < 10:
+            return None
 
-    phone = phonenumbers.parse(number=phone, region='UA' if phone.startswith('380') else 'KZ')
-    phone = phonenumbers.format_number(phone, phonenumbers.PhoneNumberFormat.E164)
-    logger.debug(f'correct_phone {phone}')
-    return phone
+        phone = phonenumbers.parse(number=phone, region='UA' if phone.startswith('380') else 'KZ')
+        phone = phonenumbers.format_number(phone, phonenumbers.PhoneNumberFormat.E164)
+        logger.debug(f'correct_phone {phone}')
+        return phone
+    except Exception as e:
+        logger.error(f'{inspect.stack()[0][1]} {inspect.stack()[0][3]}: {e}')
+        return None
 
 
 def parse_date_tz(date_str):

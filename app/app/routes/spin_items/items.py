@@ -25,14 +25,14 @@ items = {
 
     "dostyq_global": [
         {"icon": "items/aquaday", "label": "aquaday1", "amount": 1, "chance": 15, "tokenId": 63},
-        {"icon": "items/Koin", "label": "Koin1000", "amount": 1000, "chance": 5, "tokenId": 66},
-        {"icon": "items/arena", "label": "arena1000", "amount": 1000, "chance": 5, "tokenId": 2},
-        {"icon": "items/Koin", "label": "Koin750", "amount": 750, "chance": 10, "tokenId": 66},
+        {"icon": "items/aquaCash", "label": "aquaCash5000", "amount": 5000, "chance": 3, "tokenId": 37},
+        {"icon": "items/arena", "label": "arena750", "amount": 750, "chance": 15, "tokenId": 2},
+        {"icon": "items/aquaCash", "label": "aquaCash2500", "amount": 2500, "chance": 10, "tokenId": 37},
         {"icon": "items/aquaday", "label": "aquaday1", "amount": 1, "chance": 15, "tokenId": 63},
-        {"icon": "items/arena", "label": "arena750", "amount": 750, "chance": 10, "tokenId": 2},
-        {"icon": "items/Koin", "label": "Koin500", "amount": 500, "chance": 15, "tokenId": 66},
-        {"icon": "items/arena", "label": "arena500", "amount": 500, "chance": 15, "tokenId": 2},
-        {"icon": "items/Koin", "label": "Koin300", "amount": 300, "chance": 10, "tokenId": 66},
+        {"icon": "items/arena", "label": "arena1500", "amount": 1500, "chance": 9, "tokenId": 2},
+        {"icon": "items/aquaCash", "label": "aquaCash1250", "amount": 1250, "chance": 15, "tokenId": 37},
+        {"icon": "items/aquaday", "label": "aquaday1", "amount": 1, "chance": 15, "tokenId": 63},
+        {"icon": "items/arena", "label": "arena3000", "amount": 3000, "chance": 3, "tokenId": 2},
     ],
 
     "aqua": [
